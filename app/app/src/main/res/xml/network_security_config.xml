@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
+    <!-- Allow all cleartext traffic by default (needed for some ad networks) -->
     <base-config cleartextTrafficPermitted="true">
         <trust-anchors>
             <certificates src="system" />
+            <certificates src="user" />
         </trust-anchors>
     </base-config>
 
-    <!-- API domain — always HTTPS, no cleartext needed -->
+    <!-- API domain — always HTTPS -->
     <domain-config cleartextTrafficPermitted="false">
-        <domain includeSubdomains="true">zumipro.getinet.dev</domain>
+        <domain includeSubdomains="true">zunotech.getinet.dev</domain>
     </domain-config>
 </network-security-config>
