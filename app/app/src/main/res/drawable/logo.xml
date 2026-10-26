@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Zumi Pro Logo
+  Bold geometric "Z" inside a rounded square, with a cyan accent dot.
+  Primary: #7C3AED (violet) | Accent: #06B6D4 (cyan) | Text: #FFFFFF
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- Rounded square background — violet -->
+    <path
+        android:pathData="M18,18 Q18,4 32,4 L76,4 Q90,4 90,18 L90,90 Q90,104 76,104 L32,104 Q18,104 18,90 Z"
+        android:fillColor="#7C3AED"/>
+
+    <!-- Inner glow layer — indigo centre -->
+    <path
+        android:pathData="M28,28 Q28,18 38,18 L70,18 Q80,18 80,28 L80,80 Q80,90 70,90 L38,90 Q28,90 28,80 Z"
+        android:fillColor="#4F46E5"
+        android:fillAlpha="0.4"/>
+
+    <!-- Z — top bar -->
+    <path
+        android:pathData="M32,32 L76,32 Q79,32 79,35 L79,41 Q79,44 76,44 L32,44 Q29,44 29,41 L29,35 Q29,32 32,32 Z"
+        android:fillColor="#FFFFFF"/>
+
+    <!-- Z — diagonal -->
+    <path
+        android:pathData="M70,44 L70,49 L38,64 L38,59 Z"
+        android:fillColor="#FFFFFF"/>
+
+    <!-- Z — bottom bar -->
+    <path
+        android:pathData="M32,64 L76,64 Q79,64 79,67 L79,73 Q79,76 76,76 L32,76 Q29,76 29,73 L29,67 Q29,64 32,64 Z"
+        android:fillColor="#FFFFFF"/>
+
+    <!-- Cyan accent dot -->
+    <path
+        android:pathData="M68,70 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0"
+        android:fillColor="#06B6D4"/>
+
+</vector>

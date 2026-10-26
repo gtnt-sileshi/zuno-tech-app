@@ -1,0 +1,108 @@
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+}
+
+android {
+    namespace 'com.zumipro.app'
+    compileSdk 36
+
+    defaultConfig {
+        applicationId "com.zumipro.app"
+        minSdk 24
+        targetSdk 36
+        versionCode 4
+        versionName "1.0.3"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+
+        ndk {
+            // 16KB page size alignment — required for Android 15+ compatibility
+            abiFilters "arm64-v8a", "x86_64", "armeabi-v7a", "x86"
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile file("../zumipro-release.jks")
+            storePassword project.findProperty("ZUMIPRO_STORE_PASS") ?: System.getenv("ZUMIPRO_STORE_PASS") ?: ""
+            keyAlias "zumipro"
+            keyPassword project.findProperty("ZUMIPRO_KEY_PASS") ?: System.getenv("ZUMIPRO_KEY_PASS") ?: ""
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            ndk.debugSymbolLevel = 'SYMBOL_TABLE'
+            // R8 full mode is enabled via android.enableR8.fullMode=true in gradle.properties.
+            // The new optimization{} DSL is AGP 9.3+ only — not available in 9.0.x.
+        }
+        debug {
+            minifyEnabled false
+            shrinkResources false
+        }
+    }
+
+    bundle {
+        storeArchive {
+            enable = false
+        }
+    }
+
+    buildTypes.each {
+        it.buildConfigField 'String', 'BASE_URL', BASE_URL
+        it.buildConfigField 'String', 'API_NAME', API_NAME
+        it.buildConfigField 'String', 'ENC_KEY', ENC_KEY
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    packaging {
+        jniLibs {
+            useLegacyPackaging = false
+        }
+    }
+
+    lint {
+        disable 'OldTargetApi', 'GradleDynamicVersion'
+    }
+}
+
+dependencies {
+    implementation libs.bundles.core
+    implementation libs.bundles.network.security
+    implementation libs.bundles.google
+    implementation(platform(libs.firebase.bom))
+    implementation libs.firebase.messaging
+    implementation libs.scytale
+    implementation libs.eventbus
+    implementation libs.bundles.advertising
+    implementation libs.billingclient
+    implementation libs.credentials.manager
+    implementation libs.credentials.play.services
+    implementation libs.google.identity
+    implementation libs.bundles.media3
+    implementation libs.play.cast.framework
+    implementation libs.bundles.exoplayer
+    implementation libs.lifecycle.process
+    implementation libs.lifecycle.runtime
+    annotationProcessor libs.lifecycle.compiler
+    implementation libs.shimmer
+    // Only include the custom decoder extensions from libs/ — the core ExoPlayer
+    // engine, extractor and UI are pulled via Maven (bundles.media3 + bundles.exoplayer)
+    // and must NOT be duplicated here; doing so causes NoClassDefFoundError /
+    // AbstractMethodError at runtime due to version mismatches.
+    implementation fileTree(dir: "libs", include: ["lib-decoder-*.aar"])
+}

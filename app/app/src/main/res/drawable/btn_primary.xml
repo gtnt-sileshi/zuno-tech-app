@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Primary action button — violet→indigo gradient matching Zumi Pro brand -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="135"
+        android:startColor="@color/zumi_violet"
+        android:endColor="@color/zumi_indigo"
+        android:type="linear" />
+    <corners android:radius="@dimen/_5sdp" />
+    <stroke
+        android:width="@dimen/_1sdp"
+        android:color="?ns_border" />
+</shape>

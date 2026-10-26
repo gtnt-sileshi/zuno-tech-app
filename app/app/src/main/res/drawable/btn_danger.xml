@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Danger/cancel button — uses theme surface so it adapts across all themes -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="?ns_danger_btn" />
+    <corners android:radius="@dimen/_5sdp" />
+    <stroke
+        android:width="@dimen/_1sdp"
+        android:color="?ns_border" />
+</shape>
