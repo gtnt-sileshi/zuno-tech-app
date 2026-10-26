@@ -92,7 +92,7 @@
 
         <meta-data
             android:name="com.google.android.gms.cast.framework.OPTIONS_PROVIDER_CLASS_NAME"
-            android:value="com.zumipro.app.cast.CastOptionsProvider" />
+            android:value="com.zunotech.app.cast.CastOptionsProvider" />
 
         <activity
             android:name=".cast.ExpandedControlsActivity"
@@ -150,7 +150,7 @@
 
         <!-- Firebase Cloud Messaging service -->
         <service
-            android:name=".service.ZumiProMessagingService"
+            android:name=".service.ZunoTechMessagingService"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -163,7 +163,10 @@
             android:value="fcm_default_channel" />
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
-            android:resource="@mipmap/ic_launcher" />
+            android:resource="@drawable/ic_notification_small" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/ns_classic_primary" />
 
     </application>
 

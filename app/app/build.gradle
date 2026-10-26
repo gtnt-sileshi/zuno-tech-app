@@ -4,15 +4,15 @@ plugins {
 }
 
 android {
-    namespace 'com.zumipro.app'
+    namespace 'com.zunotech.app'
     compileSdk 36
 
     defaultConfig {
-        applicationId "com.zumipro.app"
+        applicationId "com.zunotech.app"
         minSdk 24
         targetSdk 36
-        versionCode 4
-        versionName "1.0.3"
+        versionCode 1
+        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -25,10 +25,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("../zumipro-release.jks")
-            storePassword project.findProperty("ZUMIPRO_STORE_PASS") ?: System.getenv("ZUMIPRO_STORE_PASS") ?: ""
-            keyAlias "zumipro"
-            keyPassword project.findProperty("ZUMIPRO_KEY_PASS") ?: System.getenv("ZUMIPRO_KEY_PASS") ?: ""
+            storeFile file("../zunotech-release.jks")
+            storePassword project.findProperty("ZUNOTECH_STORE_PASS") ?: System.getenv("ZUNOTECH_STORE_PASS") ?: ""
+            keyAlias "zunotech"
+            keyPassword project.findProperty("ZUNOTECH_KEY_PASS") ?: System.getenv("ZUNOTECH_KEY_PASS") ?: ""
         }
     }
 

@@ -25,5 +25,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Zumi Pro"
+rootProject.name = "Zuno Tech"
 include ':app'
+project(':app').projectDir = new File(settingsDir, 'app/app')

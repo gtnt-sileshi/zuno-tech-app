@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Zumi Pro</string>
+    <string name="app_name">Zuno Tech</string>
 
     <!-- TODO: Replace with your actual Web Client ID from Firebase Console →
          Authentication → Sign-in method → Google → Web SDK configuration → Web client ID.
@@ -33,7 +33,7 @@
 
 
     <!--Login/Register -->
-    <string name="dashboard">Zumi Pro</string>
+    <string name="dashboard">Zuno Tech</string>
     <string name="search">Search</string>
     <string name="login">Login</string>
     <string name="logout">Logout</string>
@@ -267,17 +267,17 @@
     <string name="profile_section_account">ACCOUNT</string>
     <string name="background_play_unsupported">Background play is only available for direct streams (HLS, DASH, MP4)</string>
 
-    <!-- Zumi Pro brand strings -->
-    <string name="splash_tagline">Stream · Discover · Enjoy</string>
-    <string name="splash_chip_news">News &amp; Blogs</string>
-    <string name="splash_chip_tv">Live TV</string>
-    <string name="splash_chip_radio">Radio</string>
-    <string name="splash_chip_events">Live Events</string>
+    <!-- Zuno Tech brand strings -->
+    <string name="splash_tagline">Discover tech. Stay ahead.</string>
+    <string name="splash_chip_news">Tech News</string>
+    <string name="splash_chip_tv">Reviews</string>
+    <string name="splash_chip_radio">How-To</string>
+    <string name="splash_chip_events">AI &amp; Gadgets</string>
     <string name="splash_loading">Loading…</string>
     <string name="tag_live">● LIVE</string>
     <string name="tag_breaking">BREAKING</string>
     <string name="tag_watch">Watch</string>
-    <string name="nav_header_subtitle">Your Premium Hub</string>
+    <string name="nav_header_subtitle">Your Tech News Hub</string>
     <string name="section_live_news">Live Channels</string>
     <string name="section_podcasts">Podcasts &amp; Radio</string>
     <string name="section_breaking">Breaking News</string>

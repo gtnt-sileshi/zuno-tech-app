@@ -1,32 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Zumi Pro — Adaptive icon foreground
-  Bold geometric "Z" with a cyan accent dot. Content within 72×72 safe zone centred at 54,54.
+  Zuno Tech — Adaptive icon FOREGROUND
+  Contains the COMPLETE hexagon logo centred inside the 72dp safe zone
+  (108dp canvas, safe zone = 18dp inset on every side).
+  The background layer is a solid navy colour handled by ic_launcher_background.
 -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
     android:width="108dp"
     android:height="108dp"
     android:viewportWidth="108"
     android:viewportHeight="108">
 
-    <!-- Z — top horizontal bar -->
+    <!-- ── Hexagon badge (centred in the 72dp safe zone, i.e. 18–90 range) ── -->
+    <!-- Pointy-top hexagon: cx=54, cy=54, r=34  →  fits well inside safe zone -->
     <path
-        android:pathData="M28,26 L80,26 Q84,26 84,30 L84,38 Q84,42 80,42 L28,42 Q24,42 24,38 L24,30 Q24,26 28,26 Z"
-        android:fillColor="#FFFFFF"/>
+        android:pathData="M54,20 L83.4,37 L83.4,71 L54,88 L24.6,71 L24.6,37 Z"
+        android:strokeColor="#33FFFFFF"
+        android:strokeWidth="1.2">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="24"
+                android:startY="20"
+                android:endX="84"
+                android:endY="88"
+                android:startColor="#2563EB"
+                android:endColor="#0EA5E9" />
+        </aapt:attr>
+    </path>
 
-    <!-- Z — diagonal stroke (top-right to bottom-left) -->
+    <!-- Z — top bar (scaled to fit inside the hexagon above) -->
     <path
-        android:pathData="M74,42 L74,47 L34,66 L34,61 Z"
-        android:fillColor="#FFFFFF"/>
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,34 L74,34 Q77,34 77,37 L77,42 Q77,45 74,45 L34,45 Q31,45 31,42 L31,37 Q31,34 34,34 Z" />
 
-    <!-- Z — bottom horizontal bar -->
+    <!-- Z — diagonal -->
     <path
-        android:pathData="M28,66 L80,66 Q84,66 84,70 L84,78 Q84,82 80,82 L28,82 Q24,82 24,78 L24,70 Q24,66 28,66 Z"
-        android:fillColor="#FFFFFF"/>
+        android:fillColor="#FFFFFF"
+        android:pathData="M68,45 L68,50 L40,63 L40,58 Z" />
 
-    <!-- Cyan accent dot — bottom-right of diagonal -->
+    <!-- Z — bottom bar -->
     <path
-        android:pathData="M70,72 m-5,0 a5,5 0 1,0 10,0 a5,5 0 1,0 -10,0"
-        android:fillColor="#06B6D4"/>
+        android:fillColor="#FFFFFF"
+        android:pathData="M34,63 L74,63 Q77,63 77,66 L77,71 Q77,74 74,74 L34,74 Q31,74 31,71 L31,66 Q31,63 34,63 Z" />
+
+    <!-- Sky accent dot -->
+    <path
+        android:fillColor="#0EA5E9"
+        android:pathData="M66,69 m-3.5,0 a3.5,3.5 0 1,0 7,0 a3.5,3.5 0 1,0 -7,0" />
 
 </vector>

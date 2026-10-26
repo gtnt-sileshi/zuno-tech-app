@@ -180,6 +180,28 @@
         <item name="castSubtitleTextAppearance">@style/TextAppearance.AppCompat.Caption</item>
     </style>
 
+    <!-- ── Toolbar theme overlays — one per theme variant ───────────────
+         colorControlNormal drives the menu icon tint (search, overflow, etc).
+         Must match the toolbar background for each theme. -->
+    <style name="ZunoTech.ToolbarTheme" parent="ThemeOverlay.MaterialComponents.ActionBar">
+        <!-- Reads ns_bg_dark which is dark on light theme, white on all dark themes -->
+        <item name="colorControlNormal">?ns_bg_dark</item>
+        <item name="android:textColorPrimary">?ns_bg_dark</item>
+    </style>
+
     <style name="CustomCastExpandedController" parent="CastExpandedController" />
+
+    <!-- ── ShapeAppearance overlays for rounded images ─────────────────
+         (dot-free names so AAPT2 does not require an implicit parent) -->
+    <style name="ZunoTechShapeCardTop">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSizeTopLeft">@dimen/_10sdp</item>
+        <item name="cornerSizeTopRight">@dimen/_10sdp</item>
+    </style>
+
+    <style name="ZunoTechShapeCardAll">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">@dimen/_8sdp</item>
+    </style>
 
 </resources>

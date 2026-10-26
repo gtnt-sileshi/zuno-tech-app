@@ -1,9 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Zuno Tech — modern document (terms) -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/_20sdp"
-    android:height="@dimen/_20sdp"
+    android:width="24dp"
+    android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
     <path
-        android:pathData="M17,2H20C20.552,2 21,2.448 21,3V21C21,21.552 20.552,22 20,22H4C3.448,22 3,21.552 3,21V3C3,2.448 3.448,2 4,2H7V0H9V2H15V0H17V2ZM17,4V6H15V4H9V6H7V4H5V20H19V4H17ZM7,8H17V10H7V8ZM7,12H17V14H7V12Z"
-        android:fillColor="@color/white"/>
+        android:strokeColor="@color/white"
+        android:strokeWidth="2"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="M14,2 H6 a2,2 0 0 0 -2,2 v16 a2,2 0 0 0 2,2 h12 a2,2 0 0 0 2,-2 V8 Z M14,2 V8 H20 M16,13 H8 M16,17 H8 M10,9 H8" />
 </vector>

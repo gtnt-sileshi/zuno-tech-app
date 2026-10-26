@@ -9,16 +9,36 @@
     android:background="?ns_bg"
     android:orientation="vertical">
 
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
+    <!-- Blue hero header -->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?ns_bg"
-        app:navigationIcon="?ns_icon_back"
-        app:navigationIconTint="?ns_bg_dark"
-        app:title="@string/about"
-        app:titleCentered="true"
-        app:titleTextColor="?ns_bg_dark"/>
+        android:layout_height="@dimen/_100sdp"
+        android:background="@drawable/bg_splash_full">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/transparent"
+            app:navigationIcon="?ns_icon_back"
+            app:navigationIconTint="@color/white"
+            app:title="@string/about"
+            app:titleCentered="true"
+            app:titleTextColor="@color/white" />
+
+        <!-- Hexagon logo in corner -->
+        <ImageView
+            android:layout_width="@dimen/_48sdp"
+            android:layout_height="@dimen/_48sdp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="@dimen/_16sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:alpha="0.25"
+            android:src="@drawable/logo"
+            android:contentDescription="@string/todo" />
+
+    </RelativeLayout>
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"

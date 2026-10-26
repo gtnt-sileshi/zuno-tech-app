@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Zuno Tech — modern bell -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="@dimen/_24sdp"
-    android:height="@dimen/_24sdp"
+    android:width="24dp"
+    android:height="24dp"
     android:viewportWidth="24"
     android:viewportHeight="24">
-  <path
-      android:pathData="M20,17H22V19H2V17H4V10C4,5.582 7.582,2 12,2C16.418,2 20,5.582 20,10V17ZM18,17V10C18,6.686 15.314,4 12,4C8.686,4 6,6.686 6,10V17H18ZM9,21H15V23H9V21Z"
-      android:fillColor="@color/white"/>
+    <path
+        android:fillColor="@color/white"
+        android:pathData="M12,2 a7,7 0 0 1 7,7 v4 l2,3 H3 l2,-3 V9 a7,7 0 0 1 7,-7 Z M10,20 a2,2 0 0 0 4,0 Z" />
 </vector>

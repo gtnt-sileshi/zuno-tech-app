@@ -16,14 +16,4 @@
         android:icon="@drawable/ic_star"
         android:title="@string/saved" />
 
-    <item
-        android:id="@+id/tv_nav_tv"
-        android:icon="@drawable/ic_tv"
-        android:title="@string/live_tv" />
-
-    <item
-        android:id="@+id/tv_nav_radio"
-        android:icon="@drawable/ic_radio"
-        android:title="@string/live_radio" />
-
 </menu>

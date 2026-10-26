@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  Zumi Pro — Splash screen (lightweight)
-  Single RelativeLayout, no nested layouts, no decoration views.
+  Zuno Tech — Splash (completely redesigned)
+  Distinctive composition: hexagon emblem centred inside a circular ring
+  loader (determinate sweep), a two-tone wordmark, and a subtle blue halo.
 -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_splash"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg_splash_full"
     android:fitsSystemWindows="true">
 
-    <!-- ── Center block: logo + name + tagline ── -->
+    <!-- Soft blue halo behind the emblem -->
+    <ImageView
+        android:id="@+id/iv_splash_glow"
+        android:layout_width="@dimen/_170sdp"
+        android:layout_height="@dimen/_170sdp"
+        android:layout_centerInParent="true"
+        android:alpha="0.7"
+        android:contentDescription="@string/todo"
+        android:src="@drawable/splash_glow_orb" />
+
+    <!-- Centre stack: emblem-in-ring + wordmark + tagline -->
     <LinearLayout
         android:id="@+id/ll_center"
         android:layout_width="wrap_content"
@@ -19,76 +31,100 @@
         android:gravity="center"
         android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/iv_splash_logo"
-            android:layout_width="@dimen/_90sdp"
-            android:layout_height="@dimen/_90sdp"
-            android:src="@drawable/logo"
-            android:contentDescription="@string/app_name" />
+        <!-- Emblem: hexagon logo inside the circular ring loader -->
+        <FrameLayout
+            android:layout_width="@dimen/_140sdp"
+            android:layout_height="@dimen/_140sdp">
+
+            <ProgressBar
+                android:id="@+id/pb_splash"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/bg_splash_loader_ring"
+                android:visibility="gone" />
+
+            <ImageView
+                android:id="@+id/iv_splash_logo"
+                android:layout_width="@dimen/_75sdp"
+                android:layout_height="@dimen/_75sdp"
+                android:layout_gravity="center"
+                android:elevation="@dimen/_2sdp"
+                android:contentDescription="@string/app_name"
+                android:src="@drawable/logo" />
+        </FrameLayout>
+
+        <!-- Two-tone wordmark -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Zuno"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_24ssp"
+                android:textStyle="bold"
+                android:letterSpacing="0.02" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/_2sdp"
+                android:text="Tech"
+                android:textColor="@color/zumi_cyan"
+                android:textSize="@dimen/_24ssp"
+                android:textStyle="bold"
+                android:letterSpacing="0.02" />
+        </LinearLayout>
+
+        <!-- Sky accent rule -->
+        <View
+            android:layout_width="@dimen/_40sdp"
+            android:layout_height="@dimen/_2sdp"
+            android:layout_marginTop="@dimen/_8sdp"
+            android:background="@drawable/bg_splash_accent" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_16sdp"
-            android:text="@string/app_name"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_24ssp"
-            android:textStyle="bold"
-            android:letterSpacing="0.02" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginTop="@dimen/_8sdp"
             android:text="@string/splash_tagline"
-            android:textColor="#80FFFFFF"
+            android:textColor="#B3CDE7FF"
             android:textSize="@dimen/_12ssp"
             android:letterSpacing="0.06" />
-
-    </LinearLayout>
-
-    <!-- ── Bottom: progress bar + version ── -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/_36sdp"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:paddingStart="@dimen/_48sdp"
-        android:paddingEnd="@dimen/_48sdp">
 
         <TextView
             android:id="@+id/tv_loading_status"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
             android:text="@string/splash_loading"
-            android:textColor="#55FFFFFF"
+            android:textColor="#66FFFFFF"
             android:textSize="@dimen/_10ssp"
             android:letterSpacing="0.08"
             android:visibility="invisible" />
 
-        <ProgressBar
-            android:id="@+id/pb_splash"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_4sdp"
-            android:progressDrawable="@drawable/bg_splash_progress_fill"
-            android:max="100"
-            android:progress="0"
-            android:visibility="gone" />
-
-        <TextView
-            android:id="@+id/tv_version"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_12sdp"
-            android:text="v1.0.0"
-            android:textColor="#40FFFFFF"
-            android:textSize="@dimen/_10ssp"
-            android:letterSpacing="0.05" />
-
     </LinearLayout>
+
+    <!-- Version -->
+    <TextView
+        android:id="@+id/tv_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/_24sdp"
+        android:text="v1.0.0"
+        android:textColor="#40FFFFFF"
+        android:textSize="@dimen/_10ssp"
+        android:letterSpacing="0.05" />
 
 </RelativeLayout>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Compact topic card — small rounded square image + title in a row -->
+<!-- Zuno Tech — topic card. Rounded square thumbnail + title + blue chevron -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rl_live_tv"
@@ -9,44 +9,44 @@
     android:gravity="center_vertical"
     android:layout_marginStart="@dimen/_12sdp"
     android:layout_marginEnd="@dimen/_12sdp"
-    android:layout_marginTop="@dimen/_5sdp"
-    android:layout_marginBottom="@dimen/_5sdp"
-    android:padding="@dimen/_10sdp"
+    android:layout_marginTop="@dimen/_6sdp"
+    android:layout_marginBottom="@dimen/_6sdp"
+    android:padding="@dimen/_12sdp"
     android:focusable="true"
     android:focusableInTouchMode="false"
     android:background="@drawable/bg_topic_card"
     android:elevation="@dimen/_1sdp">
 
-    <!-- Category thumbnail (square, rounded) -->
-    <ImageView
+    <!-- Topic thumbnail (rounded square) -->
+    <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/iv_live_tv"
         android:layout_width="@dimen/_48sdp"
         android:layout_height="@dimen/_48sdp"
         android:scaleType="centerCrop"
         android:src="@drawable/material_design_default"
-        app:hv_corner_radius="@dimen/_8sdp" />
+        app:shapeAppearanceOverlay="@style/ZunoTechShapeCardAll" />
 
-    <!-- Category name -->
+    <!-- Topic name -->
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_marginStart="@dimen/_12sdp"
+        android:layout_marginStart="@dimen/_14sdp"
         android:layout_marginEnd="@dimen/_4sdp"
         android:lines="1"
         android:ellipsize="end"
         android:text="@string/app_name"
         android:textColor="?ns_title"
-        android:textSize="@dimen/_13ssp"
+        android:textSize="@dimen/_14ssp"
         android:textStyle="bold" />
 
-    <!-- Chevron to indicate tappable item -->
+    <!-- Chevron -->
     <ImageView
         android:layout_width="@dimen/_16sdp"
         android:layout_height="@dimen/_16sdp"
         android:src="@drawable/ic_arrow_right"
-        app:tint="?ns_title_sub"
+        app:tint="?ns_primary"
         android:contentDescription="@string/todo" />
 
 </LinearLayout>

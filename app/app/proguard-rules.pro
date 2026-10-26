@@ -1,5 +1,5 @@
 # ============================================================
-#  Zumi Pro — R8 / ProGuard rules
+#  Zuno Tech — R8 / ProGuard rules
 #  (identical strategy to Fanos Pro — same ad SDK stack)
 # ============================================================
 
@@ -12,9 +12,9 @@
 -keepattributes *Annotation*,Signature,InnerClasses,EnclosingMethod
 
 # ── App entry points ─────────────────────────────────────────
--keep class com.zumipro.app.activity.MyApplication { <init>(); }
--keep class com.zumipro.app.service.ZumiProMessagingService { <init>(); }
--keep class com.zumipro.app.cast.CastOptionsProvider { <init>(); *; }
+-keep class com.zunotech.app.activity.MyApplication { <init>(); }
+-keep class com.zunotech.app.service.ZunoTechMessagingService { <init>(); }
+-keep class com.zunotech.app.cast.CastOptionsProvider { <init>(); *; }
 
 # ── Gson ─────────────────────────────────────────────────────
 -keepclassmembers,allowobfuscation class * {

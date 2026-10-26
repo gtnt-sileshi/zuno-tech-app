@@ -2,48 +2,48 @@
 <resources>
 
     <!-- ═══════════════════════════════════════════════════════════════
-         Zumi Pro Brand Colors
-         Primary  : Violet  #7C3AED
-         Secondary: Indigo  #4F46E5
-         Accent   : Cyan    #06B6D4
+         Zuno Tech Brand Colors — Technology blue palette
+         Primary  : Blue    #2563EB
+         Secondary: Blue    #3B82F6
+         Accent   : Sky     #0EA5E9
          ═══════════════════════════════════════════════════════════════ -->
 
     <!-- ── Classic (Light) theme ──────────────────────────────────── -->
-    <color name="ns_classic_primary">#7C3AED</color>
-    <color name="ns_classic_primary_sub">#267C3AED</color>
-    <color name="ns_classic_bg">#FAFAFE</color>
-    <color name="ns_classic_bg_sub">#F0EEFF</color>
-    <color name="ns_classic_title">#0F0A1E</color>
-    <color name="ns_classic_title_sub">#6B7280</color>
-    <color name="ns_classic_border">#1A7C3AED</color>
-    <color name="ns_classic_body_dark">#0F0A1E</color>
+    <color name="ns_classic_primary">#2563EB</color>
+    <color name="ns_classic_primary_sub">#222563EB</color>
+    <color name="ns_classic_bg">#F5F8FF</color>
+    <color name="ns_classic_bg_sub">#E8EEFC</color>
+    <color name="ns_classic_title">#0B1B3A</color>
+    <color name="ns_classic_title_sub">#5B6B86</color>
+    <color name="ns_classic_border">#1A2563EB</color>
+    <color name="ns_classic_body_dark">#0B1B3A</color>
 
     <!-- ── Dark theme ─────────────────────────────────────────────── -->
-    <color name="ns_dark_primary">#9D5FF5</color>
-    <color name="ns_dark_primary_sub">#269D5FF5</color>
-    <color name="ns_dark_bg">#0D0620</color>
-    <color name="ns_dark_bg_sub">#130A2E</color>
-    <color name="ns_dark_title">#F1F0FF</color>
-    <color name="ns_dark_title_sub">#E99DA8C4</color>
-    <color name="ns_dark_border">#CC130A2E</color>
+    <color name="ns_dark_primary">#60A5FA</color>
+    <color name="ns_dark_primary_sub">#2660A5FA</color>
+    <color name="ns_dark_bg">#0A1124</color>
+    <color name="ns_dark_bg_sub">#0F1B36</color>
+    <color name="ns_dark_title">#E8F0FF</color>
+    <color name="ns_dark_title_sub">#E99AA8C4</color>
+    <color name="ns_dark_border">#CC0F1B36</color>
 
     <!-- ── Dark Blue (Deep Space) variant ─────────────────────────── -->
-    <color name="ns_blue_primary">#818CF8</color>
-    <color name="ns_blue_primary_sub">#26818CF8</color>
-    <color name="ns_blue_bg">#0B0F1A</color>
-    <color name="ns_blue_bg_sub">#12172B</color>
-    <color name="ns_blue_title">#E0E7FF</color>
-    <color name="ns_blue_title_sub">#6B7394</color>
-    <color name="ns_blue_border">#F30C1020</color>
+    <color name="ns_blue_primary">#60A5FA</color>
+    <color name="ns_blue_primary_sub">#2660A5FA</color>
+    <color name="ns_blue_bg">#08101F</color>
+    <color name="ns_blue_bg_sub">#0C1830</color>
+    <color name="ns_blue_title">#DCE8FF</color>
+    <color name="ns_blue_title_sub">#637295</color>
+    <color name="ns_blue_border">#F30C1830</color>
 
     <!-- ── Dark Grey (Midnight) variant ───────────────────────────── -->
-    <color name="ns_grey_primary">#9D5FF5</color>
-    <color name="ns_grey_primary_sub">#269D5FF5</color>
-    <color name="ns_grey_bg">#0D0D14</color>
-    <color name="ns_grey_bg_sub">#18181F</color>
-    <color name="ns_grey_title">#F1F0FF</color>
-    <color name="ns_grey_title_sub">#E99DA8C4</color>
-    <color name="ns_grey_border">#1E1E28</color>
+    <color name="ns_grey_primary">#60A5FA</color>
+    <color name="ns_grey_primary_sub">#2660A5FA</color>
+    <color name="ns_grey_bg">#0D1117</color>
+    <color name="ns_grey_bg_sub">#161B22</color>
+    <color name="ns_grey_title">#E6EDF3</color>
+    <color name="ns_grey_title_sub">#E97FB0C4</color>
+    <color name="ns_grey_border">#1E2630</color>
 
     <!-- ── Base neutrals ──────────────────────────────────────────── -->
     <color name="ns_black">#FF000000</color>
@@ -55,53 +55,53 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 
-    <!-- ── Zumi Pro brand palette ──────────────────────────────────── -->
-    <color name="zumi_violet">#7C3AED</color>
-    <color name="zumi_violet_dark">#5B21B6</color>
-    <color name="zumi_violet_light">#A78BFA</color>
-    <color name="zumi_indigo">#4F46E5</color>
-    <color name="zumi_indigo_dark">#3730A3</color>
-    <color name="zumi_cyan">#06B6D4</color>
-    <color name="zumi_cyan_dark">#0E7490</color>
-    <color name="zumi_cyan_light">#67E8F9</color>
+    <!-- ── Zuno Tech brand palette ─────────────────────────────────── -->
+    <color name="zumi_violet">#2563EB</color>
+    <color name="zumi_violet_dark">#1E40AF</color>
+    <color name="zumi_violet_light">#60A5FA</color>
+    <color name="zumi_indigo">#3B82F6</color>
+    <color name="zumi_indigo_dark">#1D4ED8</color>
+    <color name="zumi_cyan">#0EA5E9</color>
+    <color name="zumi_cyan_dark">#0284C7</color>
+    <color name="zumi_cyan_light">#7DD3FC</color>
 
     <!-- Legacy aliases kept for drawables that still reference ethio_red* -->
-    <color name="ethio_red">#7C3AED</color>
-    <color name="ethio_red_dark">#5B21B6</color>
-    <color name="ethio_red_light">#A78BFA</color>
+    <color name="ethio_red">#2563EB</color>
+    <color name="ethio_red_dark">#1E40AF</color>
+    <color name="ethio_red_light">#60A5FA</color>
 
     <!-- ── Theme colour swatches (user-selectable) ────────────────── -->
-    <color name="color_setting_1">#7C3AED</color>
-    <color name="color_setting_2">#4F46E5</color>
-    <color name="color_setting_3">#06B6D4</color>
-    <color name="color_setting_4">#0EA5E9</color>
+    <color name="color_setting_1">#2563EB</color>
+    <color name="color_setting_2">#3B82F6</color>
+    <color name="color_setting_3">#0EA5E9</color>
+    <color name="color_setting_4">#06B6D4</color>
     <color name="color_setting_5">#10B981</color>
     <color name="color_setting_6">#F59E0B</color>
     <color name="color_setting_7">#EC4899</color>
 
     <!-- ── Semantic UI colors ─────────────────────────────────────── -->
-    <!-- LIVE badge — always vibrant red regardless of theme -->
+    <!-- LIVE badge -->
     <color name="news_live_red">#EF4444</color>
     <!-- Breaking / alert badge — amber -->
     <color name="news_breaking_amber">#F59E0B</color>
-    <!-- Toolbar underline / accent strip — violet -->
-    <color name="news_toolbar_accent">#7C3AED</color>
+    <!-- Toolbar underline / accent strip — blue -->
+    <color name="news_toolbar_accent">#2563EB</color>
     <!-- Scrim over banners -->
     <color name="news_scrim_dark">#CC000000</color>
 
     <!-- Skeleton loading bone — light default, overridden to dark in values-night -->
-    <color name="skeleton_bone">#E8E4F5</color>
+    <color name="skeleton_bone">#DCE6F5</color>
 
     <!-- Danger button — muted surface grey, adapts per theme -->
-    <color name="ns_classic_danger_btn">#E5E7EB</color>
-    <color name="ns_dark_danger_btn">#1F2937</color>
-    <color name="ns_blue_danger_btn">#1A2035</color>
-    <color name="ns_grey_danger_btn">#222228</color>
+    <color name="ns_classic_danger_btn">#E2E8F0</color>
+    <color name="ns_dark_danger_btn">#14203C</color>
+    <color name="ns_blue_danger_btn">#11203A</color>
+    <color name="ns_grey_danger_btn">#1C2330</color>
 
     <!-- Surface overlay (e.g. media info panel background) -->
-    <color name="ns_classic_surface">#F0EEFF</color>
-    <color name="ns_dark_surface">#130A2E</color>
-    <color name="ns_blue_surface">#12172B</color>
-    <color name="ns_grey_surface">#18181F</color>
+    <color name="ns_classic_surface">#E8EEFC</color>
+    <color name="ns_dark_surface">#0F1B36</color>
+    <color name="ns_blue_surface">#0C1830</color>
+    <color name="ns_grey_surface">#161B22</color>
 
 </resources>

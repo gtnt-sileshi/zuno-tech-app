@@ -8,7 +8,7 @@
     tools:context=".activity.MainActivity"
     android:background="?ns_bg">
 
-    <!-- Toolbar with bottom border for a newspaper/editorial feel -->
+    <!-- Toolbar wrapper with a brand-blue accent strip beneath it -->
     <LinearLayout
         android:id="@+id/ll_toolbar_wrapper"
         android:layout_width="match_parent"
@@ -25,7 +25,14 @@
             app:navigationIconTint="?ns_bg_dark"
             app:navigationIcon="@drawable/ic_menu"
             app:title="@string/app_name"
-            app:titleCentered="true" />
+            app:titleCentered="true"
+            app:theme="@style/ZunoTech.ToolbarTheme" />
+
+        <!-- Brand-blue accent rule under the toolbar -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_2sdp"
+            android:background="@color/news_toolbar_accent" />
 
     </LinearLayout>
 
@@ -35,6 +42,14 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/ll_bottom_nav"
         android:layout_below="@+id/ll_toolbar_wrapper" />
+
+    <!-- Hairline above the bottom navigation -->
+    <View
+        android:id="@+id/v_nav_hairline"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_1sdp"
+        android:layout_above="@+id/ll_bottom_nav"
+        android:background="?ns_border" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/ll_bottom_nav"
