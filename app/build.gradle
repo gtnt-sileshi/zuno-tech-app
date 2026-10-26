@@ -25,10 +25,10 @@ android {
 
     signingConfigs {
         release {
-            storeFile file("../zumipro-release.jks")
-            storePassword project.findProperty("ZUMIPRO_STORE_PASS") ?: System.getenv("ZUMIPRO_STORE_PASS") ?: ""
-            keyAlias "zumipro"
-            keyPassword project.findProperty("ZUMIPRO_KEY_PASS") ?: System.getenv("ZUMIPRO_KEY_PASS") ?: ""
+            storeFile file("../zunotech-release.jks")
+            storePassword project.findProperty("APP_STORE_PASS") ?: System.getenv("APP_STORE_PASS") ?: ""
+            keyAlias "zunotech"
+            keyPassword project.findProperty("APP_KEY_PASS") ?: System.getenv("APP_KEY_PASS") ?: ""
         }
     }
 
