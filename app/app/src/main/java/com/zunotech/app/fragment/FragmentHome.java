@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -51,6 +52,11 @@ public class FragmentHome extends Fragment {
     AdapterHome adapterHome;
     ArrayList<ItemPost> arrayList;
     private String errorMsg;
+
+    // Debounced live-search support
+    private final Handler searchHandler = new Handler(Looper.getMainLooper());
+    private Runnable searchRunnable;
+    private boolean searchFragmentOpen = false;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -188,21 +194,49 @@ public class FragmentHome extends Fragment {
     SearchView.OnQueryTextListener queryTextListener = new SearchView.OnQueryTextListener() {
         @Override
         public boolean onQueryTextSubmit(@NonNull String s) {
-            Callback.setSearchItem(s.replace(" ", "%20"));
-            FragmentSearch fSearch = new FragmentSearch();
-            FragmentManager fm = getParentFragmentManager();
-            FragmentTransaction ft = fm.beginTransaction();
-            ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-            ft.hide(Objects.requireNonNull(fm.findFragmentByTag(getString(R.string.nav_home))));
-            ft.add(R.id.fragment, fSearch, getString(R.string.search));
-            ft.addToBackStack(getString(R.string.search));
-            ft.commit();
+            searchHandler.removeCallbacks(searchRunnable);
+            if (!s.trim().isEmpty()) {
+                Callback.setSearchItem(s.replace(" ", "%20"));
+                openSearchFragment();
+            }
             return true;
         }
 
         @Override
         public boolean onQueryTextChange(String s) {
-            return false;
+            searchHandler.removeCallbacks(searchRunnable);
+            if (s.trim().isEmpty()) {
+                // User cleared the query — reset flag so we can re-open on next input
+                searchFragmentOpen = false;
+                return true;
+            }
+            searchRunnable = () -> {
+                Callback.setSearchItem(s.replace(" ", "%20"));
+                openSearchFragment();
+            };
+            searchHandler.postDelayed(searchRunnable, 400);
+            return true;
         }
     };
+
+    /** Navigate to FragmentSearch, reusing the existing instance if already open. */
+    private void openSearchFragment() {
+        FragmentManager fm = getParentFragmentManager();
+        if (searchFragmentOpen) {
+            // Already navigated — let FragmentSearch pick up the updated Callback.getSearchItem()
+            Fragment existing = fm.findFragmentByTag(getString(R.string.search));
+            if (existing instanceof FragmentSearch) {
+                ((FragmentSearch) existing).reSearch();
+            }
+            return;
+        }
+        searchFragmentOpen = true;
+        FragmentSearch fSearch = new FragmentSearch();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+        ft.hide(Objects.requireNonNull(fm.findFragmentByTag(getString(R.string.nav_home))));
+        ft.add(R.id.fragment, fSearch, getString(R.string.search));
+        ft.addToBackStack(getString(R.string.search));
+        ft.commit();
+    }
 }

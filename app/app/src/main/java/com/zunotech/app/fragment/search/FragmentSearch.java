@@ -42,7 +42,8 @@ import com.zunotech.app.utils.helper.Helper;
 
 /**
  * Blog post search results fragment.
- * Replaces the old TV-channel search — now uses blog search API.
+ * Opened from FragmentHome when the user types or submits a query.
+ * Supports live (debounced) search as the user types.
  */
 public class FragmentSearch extends Fragment {
 
@@ -53,6 +54,10 @@ public class FragmentSearch extends Fragment {
     private AdapterBlogPost adapter;
     private ArrayList<ItemBlogPost> arrayList;
     private String errorMsg;
+
+    // Keeps a reference to the SearchView so reSearch() can update it externally
+    private SearchView activeSearchView;
+    private MenuItem searchMenuItem;
 
     // Debounced live search
     private final Handler searchHandler = new Handler(Looper.getMainLooper());
@@ -83,9 +88,34 @@ public class FragmentSearch extends Fragment {
         });
         rv.setAdapter(adapter);
 
-        search();
+        // Run the initial search for the query already set by the caller
+        if (!Callback.getSearchItem().isEmpty()) {
+            search();
+        } else {
+            errorMsg = getString(R.string.search);
+            setEmpty();
+        }
+
         addMenuProvider();
         return rootView;
+    }
+
+    /**
+     * Called by FragmentHome when the user keeps typing after this fragment is
+     * already open.  Updates the search bar text and fires a new API call.
+     */
+    public void reSearch() {
+        String query = Callback.getSearchItem().replace("%20", " ");
+        // Update the SearchView text without triggering a redundant listener callback
+        if (activeSearchView != null) {
+            activeSearchView.setOnQueryTextListener(null);
+            if (searchMenuItem != null) searchMenuItem.expandActionView();
+            activeSearchView.setQuery(query, false);
+            activeSearchView.setOnQueryTextListener(queryTextListener);
+        }
+        arrayList.clear();
+        if (adapter != null) adapter.notifyDataSetChanged();
+        search();
     }
 
     private void search() {
@@ -136,13 +166,13 @@ public class FragmentSearch extends Fragment {
             shimmer.setVisibility(View.GONE);
 
             frameLayout.removeAllViews();
-            LayoutInflater inflater = (LayoutInflater) requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            View myView = inflater.inflate(R.layout.row_empty, null);
+            LayoutInflater inf = (LayoutInflater) requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View myView = inf.inflate(R.layout.row_empty, null);
             ((TextView) myView.findViewById(R.id.tv_empty_msg)).setText(errorMsg);
             myView.findViewById(R.id.ll_empty_try).setOnClickListener(v -> {
                 myView.findViewById(R.id.iv_empty).setVisibility(View.GONE);
                 myView.findViewById(R.id.pb_empty).setVisibility(View.VISIBLE);
-                new Handler().postDelayed(() -> {
+                new Handler(Looper.getMainLooper()).postDelayed(() -> {
                     myView.findViewById(R.id.iv_empty).setVisibility(View.VISIBLE);
                     myView.findViewById(R.id.pb_empty).setVisibility(View.GONE);
                     search();
@@ -159,12 +189,21 @@ public class FragmentSearch extends Fragment {
             public void onCreateMenu(@NonNull Menu menu, @NonNull MenuInflater menuInflater) {
                 menu.clear();
                 menuInflater.inflate(R.menu.menu_search, menu);
-                MenuItem item = menu.findItem(R.id.menu_search);
-                item.setShowAsAction(MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_IF_ROOM);
-                SearchView searchView = (SearchView) item.getActionView();
-                if (searchView != null) {
-                    com.zunotech.app.utils.IfSupported.applySearchViewStyle(requireContext(), searchView, item);
-                    searchView.setOnQueryTextListener(queryTextListener);
+                searchMenuItem = menu.findItem(R.id.menu_search);
+                searchMenuItem.setShowAsAction(
+                        MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW | MenuItem.SHOW_AS_ACTION_IF_ROOM);
+                activeSearchView = (SearchView) searchMenuItem.getActionView();
+                if (activeSearchView != null) {
+                    com.zunotech.app.utils.IfSupported.applySearchViewStyle(
+                            requireContext(), activeSearchView, searchMenuItem);
+                    activeSearchView.setOnQueryTextListener(queryTextListener);
+
+                    // Pre-populate the search bar with the query that opened this fragment
+                    String initial = Callback.getSearchItem().replace("%20", " ");
+                    if (!initial.isEmpty()) {
+                        searchMenuItem.expandActionView();
+                        activeSearchView.setQuery(initial, false);
+                    }
                 }
             }
             @Override public boolean onMenuItemSelected(@NonNull MenuItem menuItem) { return false; }
@@ -186,11 +225,13 @@ public class FragmentSearch extends Fragment {
             }
             return true;
         }
+
         @SuppressLint("NotifyDataSetChanged")
         @Override
         public boolean onQueryTextChange(String s) {
             searchHandler.removeCallbacks(searchRunnable);
             if (s.trim().isEmpty()) {
+                Callback.setSearchItem("");
                 arrayList.clear();
                 adapter.notifyDataSetChanged();
                 errorMsg = getString(R.string.search);
