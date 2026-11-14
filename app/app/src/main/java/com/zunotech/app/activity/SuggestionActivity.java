@@ -124,7 +124,7 @@ public class SuggestionActivity extends AppCompatActivity {
             }
         }, helper.getAPIRequest(Method.METHOD_SUGGESTION, 0, "", "",
                 titleText, descText,
-                deviceId, "", "", "", "", "",
+                deviceId, "", "", "", "",
                 "", "", imagePath.isEmpty() ? null : new File(imagePath)));
         loadSuggestion.execute();
     }

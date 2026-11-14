@@ -171,7 +171,7 @@ public class FragmentRadio extends Fragment {
                 }
             }
         }, helper.getAPIRequest(Method.METHOD_CAT, 1, "", "", "",
-                "", "", "", "", "", "", "",
+                "", "", "", "", "", "",
                 "", Method.CAT_TYPE_RADIO, null));
         loadCat.execute();
     }
@@ -299,27 +299,27 @@ public class FragmentRadio extends Fragment {
         // If there's an active search query, use search API regardless of tab
         if (!searchQuery.isEmpty()) {
             request = helper.getAPIRequest(Method.METHOD_SEARCH_RADIO, page, "", "",
-                    searchQuery, "", userId, "", "", "", "",
+                    searchQuery, "", userId, "", "", "",
                     "", "", "", null);
         } else if (tag instanceof Integer) {
             int tagInt = (Integer) tag;
             if (tagInt == TAB_FAV) {
                 request = helper.getAPIRequest(Method.METHOD_RADIO_FAV, page, "", "",
-                        "", "", userId, "", "", "", "",
+                        "", "", userId, "", "", "",
                         "", "", "", null);
             } else {
                 request = helper.getAPIRequest(Method.METHOD_RADIO_LIST, page, "", "",
-                        "", "", userId, "", "", "", "",
+                        "", "", userId, "", "", "",
                         "", "", "", null);
             }
         } else if (tag instanceof String) {
             String catId = (String) tag;
             request = helper.getAPIRequest(Method.METHOD_RADIO_BY_CAT, page, "", catId,
-                    "", "", userId, "", "", "", "",
+                    "", "", userId, "", "", "",
                     "", "", "", null);
         } else {
             request = helper.getAPIRequest(Method.METHOD_RADIO_LIST, page, "", "",
-                    "", "", userId, "", "", "", "",
+                    "", "", userId, "", "", "",
                     "", "", "", null);
         }
 

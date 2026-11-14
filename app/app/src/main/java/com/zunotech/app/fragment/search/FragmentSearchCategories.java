@@ -236,7 +236,7 @@ public class FragmentSearchCategories extends Fragment {
                 isLoading = false;
             }
         }, helper.getAPIRequest(Method.METHOD_CAT, page, "", "",
-                Callback.getSearchItem(), "", "", "", "", "",
+                Callback.getSearchItem(), "", "", "", "",
                 "", "", "", Method.CAT_TYPE_BLOG, null));
         loadCat.execute();
     }

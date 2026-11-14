@@ -197,7 +197,7 @@ public class FragmentCategories extends Fragment {
                 isLoading = false;
             }
         }, helper.getAPIRequest(helperName, page, homeSecId, "", Callback.getSearchItem(), "",
-                "", "", "", "", "", "", "",
+                "", "", "", "", "", "",
                 Method.CAT_TYPE_BLOG, null));
         loadCat.execute();
     }

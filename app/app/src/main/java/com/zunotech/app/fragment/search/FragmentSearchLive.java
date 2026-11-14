@@ -166,8 +166,7 @@ public class FragmentSearchLive extends Fragment {
                 }
             }
         }, helper.getAPIRequest(Method.METHOD_SEARCH_LIVE, page, "", "",
-                Callback.getSearchItem(), "", "", "", "",
-                "", "", "", "", "", null));
+                Callback.getSearchItem(), "", "", "", "", "", "", "", "", null));
         loadCategory.execute();
     }
 

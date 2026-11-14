@@ -49,7 +49,6 @@
     <string name="register">Register</string>
     <string name="registering">Registering..</string>
     <string name="full_name">Full name</string>
-    <string name="telephone_number">Mobile</string>
     <string name="confirm_password">Confirm Password</string>
     <string name="male">Male</string>
     <string name="female">Female</string>
@@ -152,7 +151,6 @@
     <string name="err_pass_end_space">Please do not add space at end</string>
     <string name="err_password_sort">This password is too shor</string>
     <string name="err_invalid_email">Invalid Email</string>
-    <string name="err_phone">Enter Phone</string>
     <string name="err_gender">Selected gender</string>
     <string name="err_cannot_use_features">Cannot use some of the features without requested permission</string>
     <string name="err_cannot_empty">Field cannot be empty</string>

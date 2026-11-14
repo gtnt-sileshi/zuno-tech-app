@@ -219,7 +219,7 @@ public class FragmentLatest extends Fragment {
                 }
             }
         }, helper.getAPIRequest(Method.METHOD_CAT, 1, "", "", "",
-                "", "", "", "", "", "", "", "", Method.CAT_TYPE_LIVE, null));
+                "", "", "", "", "", "", "", Method.CAT_TYPE_LIVE, null));
         loadCat.execute();
     }
 
@@ -299,7 +299,7 @@ public class FragmentLatest extends Fragment {
                 }
             }
         }, helper.getAPIRequest(method, page, "", catId, "",
-                "", deviceId, "", "", "", "", "",
+                "", deviceId, "", "", "", "",
                 "", "", null));
         loadCategory.execute();
     }

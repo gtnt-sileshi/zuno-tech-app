@@ -40,7 +40,7 @@ public class LoadAbout extends AsyncTaskExecutor<String, String, String> {
             String json = ApplicationUtil.responsePost(Callback.API_URL, helper.getAPIRequest(
                     Method.METHOD_APP_DETAILS,
                     0, "", "", "", "", "",
-                    "", "", "", "", "", "", "", null));
+                    "", "", "", "", "", "", null));
             JSONObject jsonObject = new JSONObject(json);
             JSONArray jsonArray = jsonObject.getJSONArray(Callback.TAG_ROOT);
 

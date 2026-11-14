@@ -80,7 +80,7 @@ public class ReviewDialog {
                     }
                 }
             }, helper.getAPIRequest(Method.METHOD_GET_RATINGS, 0, id, "", "",
-                    "", deviceId, "", "", "", "",
+                    "", deviceId, "", "", "",
                     "", "", "", null)).execute();
         } else {
             if (Integer.parseInt(userRating) != 0) {
@@ -127,7 +127,7 @@ public class ReviewDialog {
                     dismissDialog();
                 }
             }, helper.getAPIRequest(Method.METHOD_RATINGS, 0, id, "", "",
-                    report, deviceId, "", "", "", "",
+                    report, deviceId, "", "", "",
                     "", rate, "", null));
             loadRating.execute();
         } else {

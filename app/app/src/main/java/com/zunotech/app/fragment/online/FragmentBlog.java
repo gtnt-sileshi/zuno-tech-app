@@ -232,7 +232,7 @@ public class FragmentBlog extends Fragment {
             apiMethod, page,
             "", catId.isEmpty() ? tagId : catId,
             search, "", deviceId,
-            "", "", "", "", "", "", "", null
+            "", "", "", "", "", "", null
         );
     }
 

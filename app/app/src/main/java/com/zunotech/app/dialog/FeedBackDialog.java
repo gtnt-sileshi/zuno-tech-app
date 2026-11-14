@@ -79,7 +79,7 @@ public class FeedBackDialog {
                     dismissDialog();
                 }
             }, helper.getAPIRequest(Method.METHOD_REPORT, 0, itemID, "", reportTitle,
-                    reportMessages, deviceId, "", "", "", "",
+                    reportMessages, deviceId, "", "", "",
                     "", "", "", null));
             loadFav.execute();
         } else {

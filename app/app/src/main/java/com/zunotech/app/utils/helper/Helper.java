@@ -116,7 +116,7 @@ public class Helper {
 
     public RequestBody getAPIRequest(String helper_name, int page, String itemID, String catID,
                                      String searchText, String reportMessage, String deviceID,
-                                     String name, String email, String mobile, String gender,
+                                     String name, String email, String gender,
                                      String password, String authID, String loginType, File file) {
         JsonObject jsObj = new JsonObject();
         jsObj.addProperty("helper_name", helper_name);

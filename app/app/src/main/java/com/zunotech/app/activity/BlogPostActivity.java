@@ -180,7 +180,7 @@ public class BlogPostActivity extends AppCompatActivity {
             }
         }, helper.getAPIRequest(
             Method.METHOD_BLOG_POST, 0, postId, "", "", "", deviceId,
-            "", "", "", "", "", "", "", null
+            "", "", "", "", "", "", null
         )).execute();
     }
 
@@ -274,7 +274,7 @@ public class BlogPostActivity extends AppCompatActivity {
             }
         }, helper.getAPIRequest(
             Method.METHOD_BLOG_COMMENTS, 1, postId, "", "", "", "",
-            "", "", "", "", "", "", "", null
+            "", "", "", "", "", "", null
         )).execute();
     }
 
@@ -316,7 +316,7 @@ public class BlogPostActivity extends AppCompatActivity {
         }, helper.getAPIRequest(
             Method.METHOD_BLOG_COMMENT_POST, 0, postId, "",
             "", content, deviceId,
-            name, "", "", "", "", "", "", null
+            name, "", "", "", "", "", null
         )).execute();
     }
 
@@ -333,7 +333,7 @@ public class BlogPostActivity extends AppCompatActivity {
             }
         }, helper.getAPIRequest(
             Method.METHOD_SAVE_POST, 0, id, "", "", "", deviceId,
-            "", "", "", "", "", "", "", null
+            "", "", "", "", "", "", null
         )).execute();
     }
 

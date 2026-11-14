@@ -188,7 +188,7 @@ public class FragmentTrending extends Fragment {
                 }
             }
         }, helper.getAPIRequest(Method.METHOD_MOST_VIEWED, 0, "", "",
-                "", "", "", "", "", "",
+                "", "", "", "", "",
                 "", "", "", "", null));
         loadCategory.execute();
     }

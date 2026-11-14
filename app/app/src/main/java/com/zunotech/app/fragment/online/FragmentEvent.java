@@ -168,7 +168,7 @@ public class FragmentEvent extends Fragment {
                 }
             }
         }, helper.getAPIRequest(Method.METHOD_EVENT, page, "", "", "", "",
-                "", "", "", "", "", "", "",
+                "", "", "", "", "", "",
                 "", null));
         loadEvent.execute();
     }

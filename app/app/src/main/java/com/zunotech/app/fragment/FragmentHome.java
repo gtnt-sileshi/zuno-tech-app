@@ -110,7 +110,7 @@ public class FragmentHome extends Fragment {
                     }
                 }
             }, helper.getAPIRequest(Method.METHOD_HOME, 0, dbHelper.getRecentIDs("10"),
-                    "", "", "", "", "", "", "",
+                    "", "", "", "", "", "",
                     "", "", "", "", null));
             loadHome.execute();
         } else {

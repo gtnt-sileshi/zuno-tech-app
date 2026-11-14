@@ -267,7 +267,7 @@ public class RadioPlayerActivity extends AppCompatActivity {
                 }
             }
         }, helper.getAPIRequest(Method.METHOD_RADIO_FAV_TOG, 0, radioId, "", "",
-                "", deviceId, "", "", "", "", "", "", "radio", null))
+                "", deviceId, "", "", "", "", "", "radio", null))
         .execute();
     }
 

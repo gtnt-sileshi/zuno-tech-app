@@ -148,7 +148,7 @@ public class FragmentSearch extends Fragment {
                 }
             }
         }, helper.getAPIRequest(Method.METHOD_BLOG_SEARCH, 1, "", "",
-                Callback.getSearchItem(), "", "", "", "", "",
+                Callback.getSearchItem(), "", "", "", "",
                 "", "", "", "", null)).execute();
     }
 

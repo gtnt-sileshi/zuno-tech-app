@@ -185,7 +185,7 @@ public class FragmentSectionLive extends Fragment {
                 }
             }
         }, helper.getAPIRequest(Method.METHOD_HOME_DETAILS, 0, homeSecID, "",
-                "", "", "", "", "", "",
+                "", "", "", "", "",
                 "", "", "", "", null));
         loadCategory.execute();
     }

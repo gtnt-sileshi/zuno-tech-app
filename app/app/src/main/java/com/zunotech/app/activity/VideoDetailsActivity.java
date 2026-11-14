@@ -247,8 +247,7 @@ public class VideoDetailsActivity extends AppCompatActivity {
                 }
             }
         }, helper.getAPIRequest(Method.METHOD_LIVE_ID, 0, postID, "", "",
-                "", deviceId, "", "",
-                "","","","","",null));
+                "", deviceId, "", "","","","","",null));
         loadBank.execute();
     }
 
@@ -620,7 +619,7 @@ public class VideoDetailsActivity extends AppCompatActivity {
                 }
             }
         }, helper.getAPIRequest(Method.METHOD_LIVE_FAV, 0, itemLive.getId(), "", "",
-                "", deviceId, "", "", "", "",
+                "", deviceId, "", "", "",
                 "", "", "", null));
         loadFav.execute();
     }
