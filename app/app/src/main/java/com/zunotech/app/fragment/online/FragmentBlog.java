@@ -29,8 +29,6 @@ import com.facebook.shimmer.ShimmerFrameLayout;
 
 import java.util.ArrayList;
 
-import com.google.ads.mediation.admob.AdMobAdapter;
-import com.google.ads.mediation.facebook.FacebookMediationAdapter;
 import com.google.android.gms.ads.AdRequest;
 
 import com.zunotech.app.R;
@@ -125,18 +123,7 @@ public class FragmentBlog extends Fragment {
                     }
                 })
                 .build();
-            Bundle extras = new Bundle();
-            AdRequest adRequest;
-            if (Callback.getAdNetwork().equals(Callback.AD_TYPE_META)) {
-                adRequest = new AdRequest.Builder()
-                        .addNetworkExtrasBundle(AdMobAdapter.class, new Bundle())
-                        .addNetworkExtrasBundle(FacebookMediationAdapter.class, extras)
-                        .build();
-            } else {
-                adRequest = new AdRequest.Builder()
-                        .addNetworkExtrasBundle(AdMobAdapter.class, extras)
-                        .build();
-            }
+            AdRequest adRequest = new AdRequest.Builder().build();
             adLoader.loadAds(adRequest, 5);
         }
 

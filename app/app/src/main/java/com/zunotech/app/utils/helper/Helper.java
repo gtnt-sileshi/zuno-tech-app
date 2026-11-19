@@ -9,6 +9,7 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkCapabilities;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -73,6 +74,7 @@ import com.zunotech.app.interfaces.InterAdListener;
 import com.zunotech.app.interfaces.RewardAdListener;
 import com.zunotech.app.utils.ApplicationUtil;
 import com.zunotech.app.utils.advertising.AdManagerInterAdmob;
+import com.zunotech.app.utils.advertising.AdmobBannerCache;
 import com.zunotech.app.utils.advertising.AdManagerInterApplovin;
 import com.zunotech.app.utils.advertising.AdManagerInterStartApp;
 import com.zunotech.app.utils.advertising.AdManagerInterUnity;
@@ -259,6 +261,10 @@ public class Helper {
     public void initializeAds() {
         if (Callback.getAdNetwork().equals(Callback.AD_TYPE_ADMOB) || Callback.getAdNetwork().equals(Callback.AD_TYPE_META)) {
             MobileAds.initialize(ctx, initializationStatus -> {
+                // Preload as soon as the SDK is ready so the first eligible click has an ad.
+                if (Boolean.TRUE.equals(Callback.getIsInterAd())) {
+                    new AdManagerInterAdmob(ctx).createAd();
+                }
             });
         }
         if (Callback.getAdNetwork().equals(Callback.AD_TYPE_STARTAPP)) {
@@ -305,24 +311,10 @@ public class Helper {
             switch (Callback.getAdNetwork()) {
                 case Callback.AD_TYPE_ADMOB:
                 case Callback.AD_TYPE_META:
-                    Bundle extras = new Bundle();
-                    AdView adViewAdmob = new AdView(ctx);
-                    AdRequest adRequest;
-                    if (Callback.getAdNetwork().equals(Callback.AD_TYPE_ADMOB)) {
-                        adRequest = new AdRequest.Builder()
-                                .addNetworkExtrasBundle(AdMobAdapter.class, extras)
-                                .build();
-                    } else {
-                        adRequest = new AdRequest.Builder()
-                                .addNetworkExtrasBundle(AdMobAdapter.class, extras)
-                                .addNetworkExtrasBundle(FacebookMediationAdapter.class, extras)
-                                .build();
+                    if (!(ctx instanceof Activity) || Callback.getAdmobBannerAdID().isEmpty()) {
+                        return null;
                     }
-                    adViewAdmob.setAdUnitId(Callback.getAdmobBannerAdID());
-                    adViewAdmob.setAdSize(AdSize.BANNER);
-                    linearLayout.addView(adViewAdmob);
-                    adViewAdmob.loadAd(adRequest);
-                    return adViewAdmob;
+                    return AdmobBannerCache.attach((Activity) ctx, linearLayout);
                 case Callback.AD_TYPE_WORTISE:
                     return null;
                 case Callback.AD_TYPE_STARTAPP:                    Banner startAppBanner = new Banner(ctx);
@@ -395,7 +387,9 @@ public class Helper {
                         });
                         adManagerInterAdmob.getAd().show((Activity) ctx);
                     } else {
-                        AdManagerInterAdmob.setAd(null);
+                        // No ad ready: keep the slot so the next click is eligible again.
+                        Callback.setAdCount(Math.max(0, Callback.getInterstitialAdShow() - 1));
+                        Callback.setLastInterAdTime(0);
                         adManagerInterAdmob.createAd();
                         interAdListener.onClick(pos, type);
                     }
@@ -822,7 +816,16 @@ public class Helper {
                 && Boolean.TRUE.equals(Callback.getIsAdsStatus())
                 && new GDPRChecker(ctx).canLoadAd()) {
             Callback.setAdCount(Callback.getAdCount() + 1);
-            return Callback.getAdCount() % Callback.getInterstitialAdShow() == 0;
+            long now = SystemClock.elapsedRealtime();
+            long last = Callback.getLastInterAdTime();
+            boolean countReached = Callback.getAdCount() >= Math.max(1, Callback.getInterstitialAdShow());
+            boolean intervalPassed = last == 0 || now - last >= Callback.INTER_AD_MIN_INTERVAL_MS;
+            if (countReached && intervalPassed) {
+                Callback.setAdCount(0);
+                Callback.setLastInterAdTime(now);
+                return true;
+            }
+            return false;
         } else {
             return false;
         }

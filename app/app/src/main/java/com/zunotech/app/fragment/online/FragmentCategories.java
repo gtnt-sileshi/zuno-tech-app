@@ -30,8 +30,6 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.ads.mediation.admob.AdMobAdapter;
-import com.google.ads.mediation.facebook.FacebookMediationAdapter;
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.nativead.NativeAd;
@@ -258,19 +256,7 @@ public class FragmentCategories extends Fragment {
                 || Callback.getAdNetwork().equals(Callback.AD_TYPE_META) && arrayList.size() >= 10) {
             AdLoader.Builder builder = new AdLoader.Builder(requireContext(), Callback.getAdmobNativeAdID());
 
-            Bundle extras = new Bundle();
-
-            AdRequest adRequest;
-            if(Callback.getAdNetwork().equals(Callback.AD_TYPE_ADMOB)) {
-                adRequest = new AdRequest.Builder()
-                        .addNetworkExtrasBundle(AdMobAdapter.class, extras)
-                        .build();
-            } else {
-                adRequest = new AdRequest.Builder()
-                        .addNetworkExtrasBundle(AdMobAdapter.class, new Bundle())
-                        .addNetworkExtrasBundle(FacebookMediationAdapter.class, extras)
-                        .build();
-            }
+            AdRequest adRequest = new AdRequest.Builder().build();
             adLoader = builder.forNativeAd(nativeAd -> {
                 try {
                     arrayListNativeAds.add(nativeAd);

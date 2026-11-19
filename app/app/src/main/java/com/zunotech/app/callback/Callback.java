@@ -133,6 +133,16 @@ public class Callback implements Serializable {
     }
 
     private static int interstitialAdShow = 5;
+    // Minimum gap between two interstitials, regardless of the click counter.
+    public static final long INTER_AD_MIN_INTERVAL_MS = 60_000L;
+    // SystemClock.elapsedRealtime() of the last interstitial; 0 means none shown yet.
+    private static long lastInterAdTime = 0;
+    public static long getLastInterAdTime() {
+        return lastInterAdTime;
+    }
+    public static void setLastInterAdTime(long time) {
+        lastInterAdTime = time;
+    }
     public static int getInterstitialAdShow() {
         return interstitialAdShow;
     }
