@@ -1,15 +1,12 @@
 package com.zunotech.app.activity;
 
 import android.animation.ObjectAnimator;
-import android.animation.ValueAnimator;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -27,17 +24,18 @@ import com.zunotech.app.utils.helper.SPHelper;
 import com.zunotech.app.utils.IfSupported;
 
 /**
- * Splash / launcher screen.
+ * Launcher screen.
  *
- * Redesigned: deep-space background, Z-mark logo, content-pillar chips,
- * animated horizontal fill bar (indeterminate shimmer → progress fill).
+ * Returning users start from the cached app config and go straight to MainActivity without
+ * inflating a layout or waiting on the network. MainActivity refreshes the config in the
+ * background. Only the first launch (no cached config) shows the progress UI and waits for
+ * the server.
  */
 public class LauncherActivity extends AppCompatActivity {
 
     private Helper helper;
     private SPHelper spHelper;
     private DBHelper dbHelper;
-
     private ProgressBar pb;
     private TextView tvLoadingStatus;
 
@@ -48,10 +46,18 @@ public class LauncherActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         IfSupported.applyTheme(this);
         super.onCreate(savedInstanceState);
+
+        spHelper = new SPHelper(this);
+
+        // Returning users: no layout, no network wait.
+        if (canStartFromCache()) {
+            openMainActivity();
+            return;
+        }
+
         setContentView(R.layout.activity_launcher);
 
         helper   = new Helper(this);
-        spHelper = new SPHelper(this);
         dbHelper = new DBHelper(this);
 
         pb              = findViewById(R.id.pb_splash);
@@ -63,9 +69,22 @@ public class LauncherActivity extends AppCompatActivity {
         loadAboutData();
     }
 
+    /**
+     * True when this is not the first launch and the cached config shows no blocking state.
+     * Maintenance and a pending forced update still take the network path, so a flag the
+     * server has cleared is picked up.
+     */
+    private boolean canStartFromCache() {
+        if (Boolean.TRUE.equals(spHelper.getIsFirst())) return false;
+        if (spHelper.getAboutJson().isEmpty()) return false;
+        if (Boolean.TRUE.equals(spHelper.getIsMaintenance())) return false;
+        return !(Boolean.TRUE.equals(Callback.getIsAppUpdate())
+                && Callback.getAppNewVersion() != BuildConfig.VERSION_CODE);
+    }
+
     // ── Progress bar helpers ──────────────────────────────────────────────
 
-    /** Show the bar and status label, animate progress from 0 → target over durationMs. */
+    /** Show the bar and status label, animate progress from its current value to target. */
     private void showProgress(int targetProgress, long durationMs, String statusText) {
         if (pb.getVisibility() != View.VISIBLE) {
             pb.setProgress(0);
@@ -82,25 +101,9 @@ public class LauncherActivity extends AppCompatActivity {
         progressAnimator.start();
     }
 
-    /** Fill to 100 % then hide bar + label. */
-    private void completeAndHideProgress(Runnable onComplete) {
-        showProgress(100, 400, null);
-        new Handler(Looper.getMainLooper()).postDelayed(() -> {
-            pb.setVisibility(View.GONE);
-            tvLoadingStatus.setVisibility(View.INVISIBLE);
-            if (onComplete != null) onComplete.run();
-        }, 450);
-    }
-
-    /** Pulse the bar from current → 85 % (waiting for ad / network). */
-    private void startWaitingPulse() {
-        showProgress(70, 1800, getString(R.string.splash_loading));
-    }
-
-    // ── Data loading ──────────────────────────────────────────────────────
+    // ── Data loading (first launch, or maintenance / update pending) ──────
 
     private void loadAboutData() {
-        // Animate to 15 % immediately to show something is happening
         showProgress(15, 400, getString(R.string.splash_loading));
 
         if (!helper.isNetworkAvailable()) {
@@ -112,8 +115,7 @@ public class LauncherActivity extends AppCompatActivity {
             }
             try {
                 dbHelper.getAbout();
-                showProgress(80, 600, null);
-                new Handler(Looper.getMainLooper()).postDelayed(this::proceedToApp, 650);
+                proceedToApp();
             } catch (Exception e) {
                 hideProgressInstant();
                 errorDialog(getString(R.string.err_internet_not_connected),
@@ -134,9 +136,7 @@ public class LauncherActivity extends AppCompatActivity {
                 if ("1".equals(success)) {
                     if (!"-1".equals(verifyStatus) && !"-2".equals(verifyStatus)) {
                         dbHelper.addToAbout();
-                        showProgress(80, 500, null);
-                        new Handler(Looper.getMainLooper()).postDelayed(
-                                LauncherActivity.this::proceedToApp, 550);
+                        proceedToApp();
                     } else {
                         hideProgressInstant();
                         errorDialog(getString(R.string.err_unauthorized_access), message);
@@ -167,51 +167,24 @@ public class LauncherActivity extends AppCompatActivity {
             openDialogActivity(Callback.DIALOG_TYPE_MAINTENANCE);
         } else {
             spHelper.setIsFirst(false);
-            MyApplication app = (MyApplication) getApplication();
-            app.loadAd(LauncherActivity.this);
             openMainActivity();
         }
     }
 
     private void openMainActivity() {
-        startWaitingPulse();
+        // Preload the app-open ad so it can show on the next return to the foreground.
+        // The launcher no longer waits for it.
+        ((MyApplication) getApplication()).loadAd(this);
 
-        // Poll every 200 ms until the ad is loaded or the 8-second timeout expires.
-        final int POLL_INTERVAL_MS = 200;
-        final int MAX_WAIT_MS      = 8000;
-        final int[] elapsed        = {0};
-
-        Handler handler = new Handler(Looper.getMainLooper());
-        Runnable pollRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (isFinishing()) return;
-
-                MyApplication app = (MyApplication) getApplication();
-
-                if (app.getAppOpenAdManager().isAdAvailable()
-                        && Boolean.TRUE.equals(!app.getAppOpenAdManager().getIsShowingAd())) {
-                    completeAndHideProgress(() ->
-                            app.getAppOpenAdManager().showAdIfAvailable(LauncherActivity.this));
-                    return;
-                }
-
-                elapsed[0] += POLL_INTERVAL_MS;
-                if (elapsed[0] >= MAX_WAIT_MS) {
-                    completeAndHideProgress(() -> {
-                        Intent intent = new Intent(LauncherActivity.this, MainActivity.class);
-                        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
-                        finish();
-                    });
-                    return;
-                }
-
-                handler.postDelayed(this, POLL_INTERVAL_MS);
-            }
-        };
-        // Minimum 1-second splash before we start polling
-        handler.postDelayed(pollRunnable, 1000);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
+        finish();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            overrideActivityTransition(OVERRIDE_TRANSITION_OPEN, 0, 0);
+        } else {
+            overridePendingTransition(0, 0);
+        }
     }
 
     private void openDialogActivity(String type) {

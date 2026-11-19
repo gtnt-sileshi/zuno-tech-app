@@ -90,6 +90,8 @@ import okhttp3.RequestBody;
 
 public class Helper {
 
+    private static final java.util.concurrent.atomic.AtomicBoolean ADMOB_INIT_STARTED =
+            new java.util.concurrent.atomic.AtomicBoolean(false);
     private final Context ctx;
     private InterAdListener interAdListener;
     boolean isRewarded = false;
@@ -260,12 +262,17 @@ public class Helper {
 
     public void initializeAds() {
         if (Callback.getAdNetwork().equals(Callback.AD_TYPE_ADMOB) || Callback.getAdNetwork().equals(Callback.AD_TYPE_META)) {
-            MobileAds.initialize(ctx, initializationStatus -> {
-                // Preload as soon as the SDK is ready so the first eligible click has an ad.
-                if (Boolean.TRUE.equals(Callback.getIsInterAd())) {
-                    new AdManagerInterAdmob(ctx).createAd();
-                }
-            });
+            // Initialise once per process, off the main thread (as Google recommends).
+            // The completion callback runs on the main thread.
+            if (ADMOB_INIT_STARTED.compareAndSet(false, true)) {
+                final Context appCtx = ctx.getApplicationContext();
+                new Thread(() -> MobileAds.initialize(appCtx, initializationStatus -> {
+                    // Preload as soon as the SDK is ready so the first eligible click has an ad.
+                    if (Boolean.TRUE.equals(Callback.getIsInterAd())) {
+                        new AdManagerInterAdmob(appCtx).createAd();
+                    }
+                }), "admob-init").start();
+            }
         }
         if (Callback.getAdNetwork().equals(Callback.AD_TYPE_STARTAPP)) {
             StartAppSDK.init(ctx, Callback.getStartappAppID(), false);

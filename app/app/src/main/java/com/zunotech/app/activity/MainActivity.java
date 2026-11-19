@@ -40,6 +40,7 @@ import java.util.Map;
 
 
 import com.zunotech.app.R;
+import com.zunotech.app.BuildConfig;
 import com.zunotech.app.callback.Callback;
 import com.zunotech.app.dialog.DialogUtil;
 import com.zunotech.app.executor.LoadAbout;
@@ -75,6 +76,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     // Throttle: only re-fetch ad config if more than 30s since last fetch
     private long lastAdConfigFetch = 0;
+    // Show the "update available" prompt at most once per process.
+    private static boolean updatePromptShown = false;
     private static final long AD_CONFIG_REFRESH_MS = 30_000;
 
     @Override
@@ -131,13 +134,16 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         new GDPRChecker(MainActivity.this).check();
         loadAboutData();
 
-        manager = ReviewManagerFactory.create(this);
-        Task<ReviewInfo> request = manager.requestReviewFlow();
-        request.addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                reviewInfo = task.getResult();
-            }
-        });
+        // The review flow is only needed on exit, so request it after the first frame.
+        getWindow().getDecorView().postDelayed(() -> {
+            if (isFinishing() || isDestroyed()) return;
+            manager = ReviewManagerFactory.create(this);
+            manager.requestReviewFlow().addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    reviewInfo = task.getResult();
+                }
+            });
+        }, 3000);
 
         bottomNav = findViewById(R.id.ll_bottom_nav);
         bottomNav.setOnItemSelectedListener(item -> {
@@ -224,12 +230,29 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                 @Override
                 public void onEnd(String success, String verifyStatus, String message) {
-                    if (isFinishing() && !success.equals("1")) {
+                    if (isFinishing() || !"1".equals(success)) {
+                        return;
+                    }
+                    if ("-1".equals(verifyStatus) || "-2".equals(verifyStatus)) {
+                        showBlockingError(getString(R.string.err_unauthorized_access), message);
                         return;
                     }
                     dbHelper.addToAbout();
+                    // The splash starts from cached config, so update / maintenance changes
+                    // from the server are applied here.
+                    if (Boolean.TRUE.equals(new SPHelper(MainActivity.this).getIsMaintenance())) {
+                        openStateDialog(Callback.DIALOG_TYPE_MAINTENANCE, true);
+                        return;
+                    }
+                    if (Boolean.TRUE.equals(Callback.getIsAppUpdate())
+                            && Callback.getAppNewVersion() != BuildConfig.VERSION_CODE
+                            && !updatePromptShown) {
+                        updatePromptShown = true;
+                        openStateDialog(Callback.DIALOG_TYPE_UPDATE, false);
+                    }
                     helper.initializeAds();
                     initAds();
+                    ((MyApplication) getApplication()).loadAd(MainActivity.this);
                 }
             });
             loadAbout.execute();
@@ -242,6 +265,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
+    private void openStateDialog(String type, boolean finishSelf) {
+        Intent intent = new Intent(this, DialogActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        intent.putExtra("from", type);
+        startActivity(intent);
+        if (finishSelf) finish();
+    }
+    private void showBlockingError(String title, String message) {
+        new androidx.appcompat.app.AlertDialog.Builder(this, R.style.dialogTheme)
+                .setTitle(title)
+                .setMessage(message)
+                .setCancelable(false)
+                .setPositiveButton(getString(R.string.exit), (d, w) -> finishAffinity())
+                .show();
+    }
     private void initAds() {
         SPHelper spHelper = new SPHelper(this);
         if (Boolean.TRUE.equals(Callback.getIsInterAd()) && spHelper.getIsAdOn()) {

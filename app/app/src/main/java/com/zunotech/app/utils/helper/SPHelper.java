@@ -32,6 +32,15 @@ public class SPHelper {
         editor        = sharedPreferences.edit();
     }
 
+    // ── Cached app_details response (lets the app start without waiting for the network) ──
+    private static final String TAG_ABOUT_JSON = "cached_app_details";
+    public void setAboutJson(String json) {
+        editor.putString(TAG_ABOUT_JSON, json);
+        editor.apply();
+    }
+    public String getAboutJson() {
+        return sharedPreferences.getString(TAG_ABOUT_JSON, "");
+    }
     // ── First-open flag ────────────────────────────────────────────
     public void setIsFirst(Boolean flag) {
         editor.putBoolean("firstopen", flag);

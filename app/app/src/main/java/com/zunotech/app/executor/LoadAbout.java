@@ -41,6 +41,33 @@ public class LoadAbout extends AsyncTaskExecutor<String, String, String> {
                     Method.METHOD_APP_DETAILS,
                     0, "", "", "", "", "",
                     "", "", "", "", "", "", null));
+            String result = parse(json);
+            // Keep the last good response so the next start can skip the network wait.
+            if ("1".equals(result) && "0".equals(verifyStatus)) {
+                spHelper.setAboutJson(json);
+            }
+            return result;
+        } catch (Exception ee) {
+            return "0";
+        }
+    }
+    /**
+     * Applies the last successful app_details response from disk. Returns true if a cached
+     * response existed and was applied. Cheap enough to call on the main thread at startup.
+     */
+    public static boolean applyCached(Context context) {
+        try {
+            String json = new SPHelper(context).getAboutJson();
+            if (json == null || json.isEmpty()) {
+                return false;
+            }
+            return "1".equals(new LoadAbout(context, null).parse(json));
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    private String parse(String json) {
+        try {
             JSONObject jsonObject = new JSONObject(json);
             JSONArray jsonArray = jsonObject.getJSONArray(Callback.TAG_ROOT);
 

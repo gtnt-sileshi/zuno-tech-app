@@ -23,6 +23,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import com.zunotech.app.BuildConfig;
 import com.zunotech.app.R;
 import com.zunotech.app.callback.Callback;
+import com.zunotech.app.executor.LoadAbout;
 import com.zunotech.app.utils.ThemeManager;
 import com.zunotech.app.utils.advertising.AppOpenAdManager;
 import com.zunotech.app.utils.helper.DBHelper;
@@ -31,6 +32,8 @@ import com.zunotech.app.utils.helper.SPHelper;
 
 public class MyApplication extends android.app.Application implements android.app.Application.ActivityLifecycleCallbacks, DefaultLifecycleObserver {
 
+    private static final java.util.concurrent.Executor BACKGROUND =
+            java.util.concurrent.Executors.newSingleThreadExecutor();
     DBHelper dbHelper;
     private SPHelper spHelper;
     private AppOpenAdManager appOpenAdManager;
@@ -46,7 +49,6 @@ public class MyApplication extends android.app.Application implements android.ap
 
         spHelper = new SPHelper(getApplicationContext());
 
-        FirebaseAnalytics.getInstance(getApplicationContext());
 
         // Enable StrictMode in debug builds to catch file URI exposure and other VM violations.
         if (BuildConfig.DEBUG) {
@@ -65,16 +67,22 @@ public class MyApplication extends android.app.Application implements android.ap
             Log.e("MyApplication", "Error db", e);
         }
 
-        // Create FCM notification channel (required for Android 8+)
-        createNotificationChannel();
 
         // Ad initialisation creates a WebView and must only run in the main process.
         // Secondary processes (e.g. the :AppMetrica background process) share this
         // Application class but cannot share WebView's data directory — doing so
         // crashes with "Using WebView from more than one process at once".
         if (isMainProcess()) {
+            // Restore ad IDs, placement flags and update/maintenance state from the last
+            // successful fetch, so the first screen can show ads without waiting for the network.
+            LoadAbout.applyCached(getApplicationContext());
             new Helper(getApplicationContext()).initializeAds();
         }
+        // Work that does not need to block the first frame.
+        BACKGROUND.execute(() -> {
+            FirebaseAnalytics.getInstance(getApplicationContext());
+            createNotificationChannel();
+        });
 
         setThemeEngine();
     }
