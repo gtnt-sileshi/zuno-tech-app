@@ -90,10 +90,7 @@
     <string name="more_apps_desc">Explore our other apps on the Play Store</string>
 
     <!--Feedback-->
-    <string name="feedback">Feedback</string>
-    <string name="send_feedback">Send Feedback</string>
-    <string name="report_any_issues">Report any issues you may have en countered with the app content or its functionality.</string>
-    <string name="please_describe_the_problem">Please describe the problem…</string>
+    <string name="report_any_issues">Report any issues you may have encountered with the app content or its functionality.</string>
     <string name="submit">Submit</string>
 
     <!--Rating-->

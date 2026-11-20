@@ -149,12 +149,7 @@ public class Helper {
                 jsObj.addProperty("search_type", loginType);
             }
 
-        // ── Reports & suggestions (device-based) ──────────────────
-        } else if (Method.METHOD_REPORT.equals(helper_name)) {
-            jsObj.addProperty("post_id", itemID);
-            jsObj.addProperty("device_id", deviceID);
-            jsObj.addProperty("report_title", searchText);
-            jsObj.addProperty("report_msg", reportMessage);
+        // ── Suggestions (device-based) ─────────────────────────────
         } else if (Method.METHOD_SUGGESTION.equals(helper_name)) {
             jsObj.addProperty("suggest_title", searchText);
             jsObj.addProperty("suggest_message", reportMessage);

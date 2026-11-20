@@ -33,8 +33,7 @@ public class Method {
     public static final String CAT_TYPE_ALL   = "all";
     public static final String CAT_TYPE_BLOG  = "blog";
 
-    // ── Reports, suggestions (device-based) ───────────────────────
-    public static final String METHOD_REPORT      = "post_report";
+    // ── Suggestions (device-based) ───────────────────────
     public static final String METHOD_SUGGESTION  = "post_suggest";
 
 }
