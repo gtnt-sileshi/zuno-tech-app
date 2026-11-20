@@ -5,31 +5,32 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.zunotech.app.BuildConfig;
+import com.zunotech.app.R;
 import com.zunotech.app.callback.Callback;
 import com.zunotech.app.item.ItemAbout;
-import com.zunotech.app.item.ItemLiveTv;
 import com.zunotech.app.utils.EncryptData;
 
 public class DBHelper extends SQLiteOpenHelper {
 
     private static final String TAG = "DBHelper";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = BuildConfig.APPLICATION_ID + "_" + "app.db";
+    /** Null when the local database could not be opened or upgraded. */
     private final SQLiteDatabase db;
     EncryptData encryptData;
     final Context context;
 
     private static final String TABLE_ABOUT  = "about";
-    private static final String TABLE_RECENT = "recent";
-
-    private static final String TAG_ID      = "id";
-    private static final String TAG_LIVE_ID = "live_id";
-    private static final String TAG_TITLE   = "live_title";
-    private static final String TAG_IMAGE   = "image";
+    /** Legacy recent-items table, dropped when upgrading to version 5. */
+    private static final String LEGACY_TABLE_RECENT = "recent";
 
     private static final String TAG_ABOUT_EMAIL     = "email";
     private static final String TAG_ABOUT_AUTHOR    = "author";
@@ -44,8 +45,6 @@ public class DBHelper extends SQLiteOpenHelper {
             TAG_ABOUT_DESC, TAG_ABOUT_DEVELOPED, TAG_ABOUT_MORE_APP
     };
 
-    private final String[] columnsRecent = { TAG_ID, TAG_LIVE_ID, TAG_TITLE, TAG_IMAGE };
-
     private static final String CREATE_TABLE_ABOUT = "CREATE TABLE IF NOT EXISTS " + TABLE_ABOUT + " ("
             + TAG_ABOUT_EMAIL     + " TEXT,"
             + TAG_ABOUT_AUTHOR    + " TEXT,"
@@ -56,81 +55,43 @@ public class DBHelper extends SQLiteOpenHelper {
             + TAG_ABOUT_MORE_APP  + " TEXT"
             + ")";
 
-    private static final String CREATE_TABLE_RECENT = "CREATE TABLE IF NOT EXISTS " + TABLE_RECENT + " ("
-            + TAG_ID      + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-            + TAG_LIVE_ID + " TEXT,"
-            + TAG_TITLE   + " TEXT,"
-            + TAG_IMAGE   + " TEXT"
-            + ")";
-
     public DBHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         encryptData = new EncryptData(context);
         this.context = context;
-        db = getWritableDatabase();
+        SQLiteDatabase opened = null;
+        try {
+            // SQLiteOpenHelper opens lazily, so open here for the catch to cover create/upgrade.
+            opened = getWritableDatabase();
+        } catch (SQLiteException e) {
+            Log.e(TAG, "Local database could not be opened or upgraded", e);
+            new Handler(Looper.getMainLooper()).post(() ->
+                    Toast.makeText(this.context, R.string.local_data_upgrade_failed, Toast.LENGTH_LONG).show());
+        }
+        db = opened;
     }
 
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE_ABOUT);
-        db.execSQL(CREATE_TABLE_RECENT);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_RECENT);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ABOUT);
-        onCreate(db);
-    }
-
-    @SuppressLint("Range")
-    public void addToRecent(ItemLiveTv itemData) {
-        try (Cursor cursor = db.query(TABLE_RECENT, columnsRecent, null, null, null, null, null)) {
-            if (cursor != null && cursor.getCount() > 20) {
-                cursor.moveToFirst();
-                String oldestId = cursor.getString(cursor.getColumnIndex(TAG_LIVE_ID));
-                db.delete(TABLE_RECENT, TAG_LIVE_ID + "=?", new String[]{oldestId});
+        db.beginTransaction();
+        try {
+            if (oldVersion < 5) {
+                db.execSQL("DROP TABLE IF EXISTS " + LEGACY_TABLE_RECENT);
             }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
         }
-
-        if (Boolean.TRUE.equals(checkRecent(itemData.getId()))) {
-            db.delete(TABLE_RECENT, TAG_LIVE_ID + "=" + itemData.getId(), null);
-        }
-
-        String name     = itemData.getLiveTitle().replace("'", "%27");
-        String imageBig = encryptData.encrypt(itemData.getImage().replace(" ", "%20"));
-
-        ContentValues contentValues = new ContentValues();
-        contentValues.put(TAG_LIVE_ID, itemData.getId());
-        contentValues.put(TAG_TITLE,   name);
-        contentValues.put(TAG_IMAGE,   imageBig);
-        db.insert(TABLE_RECENT, null, contentValues);
-    }
-
-    private Boolean checkRecent(String id) {
-        try (Cursor cursor = db.query(TABLE_RECENT, columnsRecent, TAG_LIVE_ID + "=?",
-                new String[]{id}, null, null, null)) {
-            return cursor.getCount() > 0;
-        }
-    }
-
-    @SuppressLint("Range")
-    public String getRecentIDs(String limit) {
-        StringBuilder recentIDs = new StringBuilder();
-        try (Cursor cursor = db.query(TABLE_RECENT, new String[]{TAG_LIVE_ID},
-                null, null, null, null, TAG_ID + " DESC", limit)) {
-            if (cursor != null && cursor.moveToFirst()) {
-                do {
-                    if (recentIDs.length() > 0) recentIDs.append(",");
-                    recentIDs.append(cursor.getString(cursor.getColumnIndex(TAG_LIVE_ID)));
-                } while (cursor.moveToNext());
-            }
-        }
-        return recentIDs.toString();
     }
 
     // About ---------------------------------------------------------------------------------------
     public void addToAbout() {
+        if (db == null) return;
         try {
             db.delete(TABLE_ABOUT, null, null);
             ContentValues contentValues = new ContentValues();
@@ -148,6 +109,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @SuppressLint("Range")
     public Boolean getAbout() {
+        if (db == null) return false;
         try (Cursor c = db.query(TABLE_ABOUT, columnsAbout, null, null, null, null, null)) {
             if (c != null && c.moveToFirst()) {
                 String email     = c.getString(c.getColumnIndex(TAG_ABOUT_EMAIL));

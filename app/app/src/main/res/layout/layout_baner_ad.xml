@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Home ad row. No margin until an ad is attached (AdapterHome adds the top gap), so no space
+     is reserved when no ad loads. -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:id="@+id/ll_adView"
-    android:background="?ns_bg"
-    android:backgroundTint="?ns_bg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="@dimen/_4sdp"
-    android:layout_marginBottom="@dimen/_4sdp"/>
+    android:layout_marginStart="@dimen/_16sdp"
+    android:layout_marginEnd="@dimen/_16sdp"
+    android:orientation="vertical" />

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/rl_home_blog"
+    android:layout_width="144dp"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/_8sdp"
+    android:background="@drawable/bg_home_card"
+    android:focusable="true"
+    android:focusableInTouchMode="false"
+    android:orientation="vertical"
+    android:padding="@dimen/_12sdp">
+
+    <ImageView
+        android:id="@+id/iv_blog_image"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_80sdp"
+        android:importantForAccessibility="no"
+        android:scaleType="centerCrop"
+        app:hv_corner_radius="@dimen/_8sdp" />
+
+    <TextView
+        android:id="@+id/tv_blog_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:ellipsize="end"
+        android:maxLines="2"
+        android:text="@string/app_name"
+        android:textColor="?ns_title"
+        android:textSize="@dimen/text_caption" />
+</LinearLayout>

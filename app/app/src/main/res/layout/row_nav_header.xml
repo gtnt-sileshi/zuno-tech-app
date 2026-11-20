@@ -6,12 +6,12 @@
     android:layout_height="wrap_content"
     android:background="?ns_bg"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/_16sdp">
+    android:paddingTop="32dp"
+    android:paddingBottom="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/_16sdp"
         android:orientation="horizontal"
         android:paddingStart="@dimen/_16sdp"
         android:paddingEnd="@dimen/_16sdp"
@@ -20,7 +20,7 @@
         <androidx.cardview.widget.CardView
             app:cardElevation="@dimen/_2sdp"
             app:cardCornerRadius="@dimen/_12sdp"
-            app:cardBackgroundColor="@color/ethio_red"
+            app:cardBackgroundColor="?ns_primary_sub"
             android:layout_width="@dimen/_48sdp"
             android:layout_height="@dimen/_48sdp">
 
@@ -62,8 +62,8 @@
     <!-- Brand-blue accent bar under the header -->
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/_2sdp"
-        android:layout_marginTop="@dimen/_16sdp"
-        android:background="@color/news_toolbar_accent" />
+        android:layout_height="2dp"
+        android:layout_marginTop="16dp"
+        android:background="?ns_primary" />
 
 </LinearLayout>

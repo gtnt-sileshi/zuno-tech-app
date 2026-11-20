@@ -1,5 +1,6 @@
 package com.zunotech.app.adapter;
 
+import com.zunotech.app.utils.advertising.AdFormat;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -18,18 +19,10 @@ import androidx.annotation.NonNull;
 import android.widget.ImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.nativeAds.MaxNativeAdListener;
-import com.applovin.mediation.nativeAds.MaxNativeAdLoader;
-import com.applovin.mediation.nativeAds.MaxNativeAdView;
 import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.squareup.picasso.Picasso;
-import com.startapp.sdk.ads.nativead.NativeAdPreferences;
-import com.startapp.sdk.ads.nativead.StartAppNativeAd;
-import com.startapp.sdk.adsbase.Ad;
-import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -71,8 +64,8 @@ public class AdapterCategories extends RecyclerView.Adapter<RecyclerView.ViewHol
             super(view);
 
             title = view.findViewById(R.id.tv_title);
-            logo = view.findViewById(R.id.iv_live_tv);
-            itemView2 = view.findViewById(R.id.rl_live_tv);
+            logo = view.findViewById(R.id.iv_cat_logo);
+            itemView2 = view.findViewById(R.id.rl_cat_item);
         }
     }
 
@@ -135,9 +128,9 @@ public class AdapterCategories extends RecyclerView.Adapter<RecyclerView.ViewHol
 
         } else if (holder instanceof ADViewHolder adViewHolder) {
             if (adViewHolder.nativeAd.getChildCount() == 0) {
-                switch (Callback.getAdNetwork()) {
-                    case Callback.AD_TYPE_ADMOB, Callback.AD_TYPE_META -> {
-                        if (Boolean.TRUE.equals(isAdLoaded) && mNativeAdsAdmob.size() >= 5) {
+                {
+                        if (Boolean.TRUE.equals(isAdLoaded) && mNativeAdsAdmob.size() >= 5
+                                && Callback.getAdConfig().shouldRequest(AdFormat.NATIVE)) {
 
                             int i = ApplicationUtil.getRandomValue(mNativeAdsAdmob.size() - 1);
 
@@ -151,61 +144,6 @@ public class AdapterCategories extends RecyclerView.Adapter<RecyclerView.ViewHol
                         }
 
                     }
-                    case Callback.AD_TYPE_STARTAPP -> {
-                        if (!adViewHolder.isAdRequested) {
-                            StartAppNativeAd nativeAd = new StartAppNativeAd(context);
-
-                            nativeAd.loadAd(new NativeAdPreferences()
-                                    .setAdsNumber(1)
-                                    .setAutoBitmapDownload(true)
-                                    .setPrimaryImageSize(2), new AdEventListener() {
-                                @Override
-                                public void onReceiveAd(@NonNull Ad ad) {
-                                    try {
-                                        if (!nativeAd.getNativeAds().isEmpty()) {
-                                            RelativeLayout nativeAdView = (RelativeLayout) ((Activity) context)
-                                                    .getLayoutInflater().inflate(R.layout.layout_native_ad_startapp, null);
-
-                                            ImageView icon = nativeAdView.findViewById(R.id.icon);
-                                            TextView title = nativeAdView.findViewById(R.id.title);
-                                            TextView description = nativeAdView.findViewById(R.id.description);
-                                            Button button = nativeAdView.findViewById(R.id.button);
-
-                                            Picasso.get()
-                                                    .load(nativeAd.getNativeAds().get(0).getImageUrl())
-                                                    .into(icon);
-                                            title.setText(nativeAd.getNativeAds().get(0).getTitle());
-                                            description.setText(nativeAd.getNativeAds().get(0).getDescription());
-                                            button.setText(nativeAd.getNativeAds().get(0).isApp() ? "Install" : "Open");
-
-                                            adViewHolder.nativeAd.removeAllViews();
-                                            adViewHolder.nativeAd.addView(nativeAdView);
-                                            adViewHolder.nativeAd.setVisibility(View.VISIBLE);
-                                        }
-                                    } catch (Exception e) {
-                                        Log.e("AdapterCategories", "StartApp native ad failed", e);
-                                    }
-                                }
-
-                                @Override
-                                public void onFailedToReceiveAd(Ad ad) {
-                                    adViewHolder.isAdRequested = false;
-                                }
-                            });
-                            adViewHolder.isAdRequested = true;
-                        }
-                    }
-                    case Callback.AD_TYPE_APPLOVIN -> {
-                        MaxNativeAdLoader nativeAdLoader = getMaxNativeAdLoader(adViewHolder);
-                        nativeAdLoader.loadAd();
-                    }
-                    case Callback.AD_TYPE_WORTISE -> {
-                        // Wortise removed
-                    }
-                    default-> {
-                        // noData
-                    }
-                }
             }
         } else {
             if (getItemCount() <= 10) {
@@ -216,20 +154,6 @@ public class AdapterCategories extends RecyclerView.Adapter<RecyclerView.ViewHol
                         .post(() -> notifyItemChanged(arrayList.size()));
             }
         }
-    }
-
-    @NonNull
-    private MaxNativeAdLoader getMaxNativeAdLoader(ADViewHolder holder) {
-        MaxNativeAdLoader nativeAdLoader = new MaxNativeAdLoader(Callback.getApplovinNativeAdID(), context);
-        nativeAdLoader.setNativeAdListener(new MaxNativeAdListener() {
-            @Override
-            public void onNativeAdLoaded(final MaxNativeAdView nativeAdView, @NonNull final MaxAd ad) {
-                holder.nativeAd.removeAllViews();
-                holder.nativeAd.addView(nativeAdView);
-                holder.nativeAd.setVisibility(View.VISIBLE);
-            }
-        });
-        return nativeAdLoader;
     }
 
     @Override

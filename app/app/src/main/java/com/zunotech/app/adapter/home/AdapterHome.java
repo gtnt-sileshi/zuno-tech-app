@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -20,20 +19,17 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import com.zunotech.app.R;
+import com.zunotech.app.activity.BlogPostActivity;
 import com.zunotech.app.activity.MainActivity;
-import com.zunotech.app.activity.VideoDetailsActivity;
 import com.zunotech.app.callback.Callback;
 import com.zunotech.app.callback.Method;
 import com.zunotech.app.fragment.online.FragmentBlog;
 import com.zunotech.app.fragment.online.FragmentCategories;
-import com.zunotech.app.fragment.online.FragmentEvent;
-import com.zunotech.app.fragment.online.FragmentLatest;
-import com.zunotech.app.fragment.online.FragmentSectionLive;
-import com.zunotech.app.fragment.online.FragmentTrending;
 import com.zunotech.app.interfaces.InterAdListener;
 import com.zunotech.app.item.ItemPost;
 import com.zunotech.app.utils.helper.Helper;
@@ -52,16 +48,59 @@ public class AdapterHome extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private static final int VIEW_PROG = 0;
     private static final int VIEW_BANNER = 1;
     private static final int VIEW_CATEGORIES = 2;
-    private static final int VIEW_EVENT = 3;
-    private static final int VIEW_LIVE = 4;
-    private static final int VIEW_RECENT = 5;
-    private static final int VIEW_ADS = 6;
+    static final int VIEW_ADS = 3;
+    /** Section type that this adapter does not render; such sections are filtered out. */
+    static final int VIEW_NONE = 4;
+    private static final int VIEW_BLOG = 5;
+    private static final String TYPE_BLOG = "blog";
+
+    /** Maps an API section type to a view type, or {@link #VIEW_NONE} when it is not rendered. */
+    static int viewTypeOf(String type) {
+        if (type == null) {
+            return VIEW_NONE;
+        }
+        return switch (type) {
+            case "slider" -> VIEW_BANNER;
+            case "category" -> VIEW_CATEGORIES;
+            case "blog" -> VIEW_BLOG;
+            case "ads" -> VIEW_ADS;
+            default -> VIEW_NONE;
+        };
+    }
+
+    /**
+     * Returns the sections that produce a row, in their original order. A section is kept only
+     * when its type is known and it has at least one item, so no header, spacer or placeholder
+     * row is created for empty or unknown sections. The "ads" row has no items and is kept.
+     */
+    public static List<ItemPost> buildRows(List<ItemPost> sections) {
+        List<ItemPost> rows = new ArrayList<>();
+        if (sections == null) {
+            return rows;
+        }
+        for (ItemPost section : sections) {
+            if (section != null && hasRow(section)) {
+                rows.add(section);
+            }
+        }
+        return rows;
+    }
+
+    private static boolean hasRow(ItemPost section) {
+        return switch (viewTypeOf(section.getType())) {
+            case VIEW_BANNER -> !section.getArrayListBanner().isEmpty();
+            case VIEW_CATEGORIES -> !section.getArrayListCategories().isEmpty();
+            case VIEW_BLOG -> !section.getArrayListLive().isEmpty();
+            case VIEW_ADS -> true;
+            default -> false;
+        };
+    }
 
     Boolean ads = true;
 
     public AdapterHome(Context context, List<ItemPost> arrayList) {
         this.context = context;
-        this.arrayList = arrayList;
+        this.arrayList = buildRows(arrayList);
         helper = new Helper(context, interAdListener);
         spHelper = new SPHelper(context);
     }
@@ -92,60 +131,24 @@ public class AdapterHome extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
             rv.setLayoutManager(linearLayoutManager);
             rv.setItemAnimator(new DefaultItemAnimator());
+            rv.addItemDecoration(new HomeSpacingDecoration(context));
         }
     }
 
-    class EventHolder extends RecyclerView.ViewHolder {
-
+    class BlogHolder extends RecyclerView.ViewHolder {
         RecyclerView rv;
-        AdapterHomeEvent adapter;
+        AdapterHomeBlog adapter;
         TextView title;
         LinearLayout viewAll;
 
-        EventHolder(View view) {
+        BlogHolder(View view) {
             super(view);
             rv = view.findViewById(R.id.rv_home_cat);
             title = view.findViewById(R.id.tv_home_title);
             viewAll = view.findViewById(R.id.ll_home_view_all);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false);
-            rv.setLayoutManager(linearLayoutManager);
+            rv.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
             rv.setItemAnimator(new DefaultItemAnimator());
-        }
-    }
-
-    class LiveHolder extends RecyclerView.ViewHolder {
-
-        RecyclerView rv;
-        AdapterHomeLive adapter;
-        TextView title;
-        LinearLayout viewAll;
-
-        LiveHolder(View view) {
-            super(view);
-            rv = view.findViewById(R.id.rv_home_cat);
-            title = view.findViewById(R.id.tv_home_title);
-            viewAll = view.findViewById(R.id.ll_home_view_all);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-            rv.setLayoutManager(linearLayoutManager);
-            rv.setItemAnimator(new DefaultItemAnimator());
-        }
-    }
-
-    class RecentHolder extends RecyclerView.ViewHolder {
-
-        RecyclerView rv;
-        TextView title;
-        AdapterHomeRecent adapter;
-        LinearLayout viewAll;
-
-        RecentHolder(View view) {
-            super(view);
-            rv = view.findViewById(R.id.rv_home_cat);
-            title = view.findViewById(R.id.tv_home_title);
-            viewAll = view.findViewById(R.id.ll_home_view_all);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false);
-            rv.setLayoutManager(linearLayoutManager);
-            rv.setItemAnimator(new DefaultItemAnimator());
+            rv.addItemDecoration(new HomeSpacingDecoration(context));
         }
     }
 
@@ -156,6 +159,27 @@ public class AdapterHome extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         LatestAds(View view) {
             super(view);
             adView = view.findViewById(R.id.ll_adView);
+            // No space is reserved until an ad is attached to the container.
+            final int gap = view.getResources().getDimensionPixelSize(R.dimen._16sdp);
+            adView.setOnHierarchyChangeListener(new ViewGroup.OnHierarchyChangeListener() {
+                @Override
+                public void onChildViewAdded(View parent, View child) {
+                    setTopMargin(gap);
+                }
+
+                @Override
+                public void onChildViewRemoved(View parent, View child) {
+                    setTopMargin(adView.getChildCount() == 0 ? 0 : gap);
+                }
+
+                private void setTopMargin(int px) {
+                    ViewGroup.LayoutParams lp = adView.getLayoutParams();
+                    if (lp instanceof ViewGroup.MarginLayoutParams mlp && mlp.topMargin != px) {
+                        mlp.topMargin = px;
+                        adView.setLayoutParams(mlp);
+                    }
+                }
+            });
         }
     }
 
@@ -180,18 +204,10 @@ public class AdapterHome extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.layout_home_ui_categories, parent, false);
             return new CategoriesHolder(itemView);
-        } else if (viewType == VIEW_EVENT) {
+        } else if (viewType == VIEW_BLOG) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.layout_home_ui_categories, parent, false);
-            return new EventHolder(itemView);
-        } else if (viewType == VIEW_LIVE) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.layout_home_ui_categories, parent, false);
-            return new LiveHolder(itemView);
-        }  else if (viewType == VIEW_RECENT) {
-            View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.layout_home_ui_categories, parent, false);
-            return new RecentHolder(itemView);
+            return new BlogHolder(itemView);
         } else if (viewType == VIEW_ADS) {
             View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.layout_baner_ad, parent, false);
@@ -216,56 +232,6 @@ public class AdapterHome extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     bannerHolder.viewPager2.setCurrentItem(1, false);
                 }
             }
-        }
-        else if (holder instanceof RecentHolder recentHolder) {
-            recentHolder.title.setText(arrayList.get(holder.getAbsoluteAdapterPosition()).getTitle());
-
-            recentHolder.adapter = new AdapterHomeRecent(context,
-                    arrayList.get(holder.getAbsoluteAdapterPosition()).getArrayListLive(), new AdapterHomeRecent.RecyclerItemClickListener() {
-                @Override
-                public void onClick(int position) {
-                    clickPos = holder.getAbsoluteAdapterPosition();
-                    helper.showInterAd(position, context.getString(R.string.live));
-                }
-
-                @Override
-                public void onRewardAds(int position) {
-                    if (spHelper.getRewardCredit() != 0){
-                        spHelper.useRewardCredit(1);
-                        clickPos = holder.getAbsoluteAdapterPosition();
-                        helper.showInterAd(position, context.getString(R.string.live));
-                        Toast.makeText(context, "Your Total Credit ("+spHelper.getRewardCredit()+")", Toast.LENGTH_SHORT).show();
-                    } else {
-                        helper.showRewardAds(holder.getAbsoluteAdapterPosition(), (isLoad, pos) -> {
-                            if (isLoad){
-                                spHelper.addRewardCredit(Callback.getRewardCredit());
-                                spHelper.useRewardCredit(1);
-                                clickPos = pos;
-                                helper.showInterAd(pos, context.getString(R.string.live));
-                                Toast.makeText(context, "Your Total Credit ("+spHelper.getRewardCredit()+")", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, "Display Failed", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-            });
-            recentHolder.rv.setAdapter(recentHolder.adapter);
-
-            recentHolder.viewAll.setOnClickListener(v -> {
-                FragmentBlog saved = FragmentBlog.newInstance(
-                    Method.METHOD_SAVED_POSTS, "", "", context.getString(R.string.saved_posts));
-                FragmentTransaction ft = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.hide(((AppCompatActivity) context).getSupportFragmentManager()
-                        .getFragments()
-                        .get(((AppCompatActivity) context).getSupportFragmentManager().getBackStackEntryCount()));
-                ft.add(R.id.fragment, saved, context.getString(R.string.saved_posts));
-                ft.addToBackStack(context.getString(R.string.saved_posts));
-                ft.commit();
-                Objects.requireNonNull(((MainActivity) context).getSupportActionBar()).setTitle(context.getString(R.string.saved_posts));
-                ((MainActivity) context).bottomNavigationView(4);
-            });
         }
         else if (holder instanceof CategoriesHolder categoriesHolder) {
 
@@ -299,121 +265,33 @@ public class AdapterHome extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 ((MainActivity) context).bottomNavigationView(5);
             });
         }
-        else if (holder instanceof EventHolder eventHolder) {
-            eventHolder.title.setText(arrayList.get(holder.getAbsoluteAdapterPosition()).getTitle());
-
-            eventHolder.adapter = new AdapterHomeEvent(arrayList.get(holder.getAbsoluteAdapterPosition()).getArrayListEvent());
-            eventHolder.rv.setAdapter(eventHolder.adapter);
-
-            eventHolder.rv.addOnItemTouchListener(new RecyclerItemClickListener(context, (view, position1) -> {
+        else if (holder instanceof BlogHolder blogHolder) {
+            ItemPost section = arrayList.get(holder.getAbsoluteAdapterPosition());
+            blogHolder.title.setText(section.getTitle());
+            blogHolder.adapter = new AdapterHomeBlog(section.getArrayListLive(), position1 -> {
                 clickPos = holder.getAbsoluteAdapterPosition();
-                helper.showInterAd(position1, context.getString(R.string.live_event));
-            }));
-
-            eventHolder.viewAll.setOnClickListener(v -> {
-                FragmentEvent event = new FragmentEvent();
-                FragmentTransaction ft = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                ft.hide(((AppCompatActivity) context).getSupportFragmentManager()
-                        .getFragments()
-                        .get(((AppCompatActivity) context).getSupportFragmentManager().getBackStackEntryCount()));
-                ft.add(R.id.fragment, event, context.getString(R.string.live_event));
-                ft.addToBackStack(context.getString(R.string.live_event));
-                ft.commit();
-                Objects.requireNonNull(((MainActivity) context).getSupportActionBar()).setTitle(context.getString(R.string.live_event));
-                ((MainActivity) context).bottomNavigationView(5);
+                helper.showInterAd(position1, TYPE_BLOG);
             });
-        }
-        else if (holder instanceof LiveHolder liveHolder) {
-            liveHolder.title.setText(arrayList.get(holder.getAbsoluteAdapterPosition()).getTitle());
-
-            liveHolder.adapter = new AdapterHomeLive(context,
-                    arrayList.get(holder.getAbsoluteAdapterPosition()).getArrayListLive(), new AdapterHomeLive.RecyclerItemClickListener() {
-                @Override
-                public void onClick(int position) {
-                    clickPos = holder.getAbsoluteAdapterPosition();
-                    helper.showInterAd(position, context.getString(R.string.live));
-                }
-
-                @Override
-                public void onRewardAds(int position) {
-                    if (spHelper.getRewardCredit() != 0){
-                        spHelper.useRewardCredit(1);
-                        clickPos = holder.getAbsoluteAdapterPosition();
-                        helper.showInterAd(position, context.getString(R.string.live));
-                        Toast.makeText(context, "Your Total Credit ("+spHelper.getRewardCredit()+")", Toast.LENGTH_SHORT).show();
-                    } else {
-                        helper.showRewardAds(holder.getAbsoluteAdapterPosition(), (isLoad, pos) -> {
-                            if (isLoad){
-                                spHelper.addRewardCredit(Callback.getRewardCredit());
-                                spHelper.useRewardCredit(1);
-                                clickPos = pos;
-                                helper.showInterAd(pos, context.getString(R.string.live));
-                                Toast.makeText(context, "Your Total Credit ("+spHelper.getRewardCredit()+")", Toast.LENGTH_SHORT).show();
-                            } else {
-                                Toast.makeText(context, "Display Failed", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                }
-            });
-            liveHolder.rv.setAdapter(liveHolder.adapter);
-
-            liveHolder.viewAll.setOnClickListener(v -> {
-                if (arrayList.get(holder.getAbsoluteAdapterPosition()).getSections().equals("recently")){
-                    FragmentBlog saved = FragmentBlog.newInstance(
-                        Method.METHOD_SAVED_POSTS, "", "", context.getString(R.string.saved_posts));
+            blogHolder.rv.setAdapter(blogHolder.adapter);
+            if ("latest".equals(section.getSections())) {
+                blogHolder.viewAll.setVisibility(View.VISIBLE);
+                blogHolder.viewAll.setOnClickListener(v -> {
+                    FragmentBlog all = FragmentBlog.newInstance(
+                        Method.METHOD_BLOG_POSTS, "", "", section.getTitle());
                     FragmentTransaction ft = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
                     ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                     ft.hide(((AppCompatActivity) context).getSupportFragmentManager()
                             .getFragments()
                             .get(((AppCompatActivity) context).getSupportFragmentManager().getBackStackEntryCount()));
-                    ft.add(R.id.fragment, saved, context.getString(R.string.saved_posts));
-                    ft.addToBackStack(context.getString(R.string.saved_posts));
+                    ft.add(R.id.fragment, all, section.getTitle());
+                    ft.addToBackStack(section.getTitle());
                     ft.commit();
-                    Objects.requireNonNull(((MainActivity) context).getSupportActionBar()).setTitle(context.getString(R.string.saved_posts));
-                    ((MainActivity) context).bottomNavigationView(4);
-                } else if (arrayList.get(holder.getAbsoluteAdapterPosition()).getSections().equals("latest")){
-                    FragmentLatest latest = new FragmentLatest();
-                    FragmentTransaction ft = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    ft.hide(((AppCompatActivity) context).getSupportFragmentManager()
-                            .getFragments()
-                            .get(((AppCompatActivity) context).getSupportFragmentManager().getBackStackEntryCount()));
-                    ft.add(R.id.fragment, latest, context.getString(R.string.latest));
-                    ft.addToBackStack(context.getString(R.string.latest));
-                    ft.commit();
-                    Objects.requireNonNull(((MainActivity) context).getSupportActionBar()).setTitle(context.getString(R.string.latest));
-                    ((MainActivity) context).bottomNavigationView(1);
-                } else if (arrayList.get(holder.getAbsoluteAdapterPosition()).getSections().equals("trending")){
-                    FragmentTrending most = new FragmentTrending();
-                    FragmentTransaction ft = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    ft.hide(((AppCompatActivity) context).getSupportFragmentManager()
-                            .getFragments()
-                            .get(((AppCompatActivity) context).getSupportFragmentManager().getBackStackEntryCount()));
-                    ft.add(R.id.fragment, most, context.getString(R.string.trending));
-                    ft.addToBackStack(context.getString(R.string.trending));
-                    ft.commit();
-                    Objects.requireNonNull(((MainActivity) context).getSupportActionBar()).setTitle(context.getString(R.string.trending));
-                    ((MainActivity) context).bottomNavigationView(2);
-                } else {
-                    FragmentSectionLive section = new FragmentSectionLive();
-                    Bundle bundle = new Bundle();
-                    bundle.putString("id", arrayList.get(holder.getAbsoluteAdapterPosition()).getId());
-                    section.setArguments(bundle);
-                    FragmentTransaction ft = ((AppCompatActivity) context).getSupportFragmentManager().beginTransaction();
-                    ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-                    ft.hide(((AppCompatActivity) context).getSupportFragmentManager()
-                            .getFragments()
-                            .get(((AppCompatActivity) context).getSupportFragmentManager().getBackStackEntryCount()));
-                    ft.add(R.id.fragment, section, context.getString(R.string.live));
-                    ft.addToBackStack(context.getString(R.string.live));
-                    ft.commit();
-                    Objects.requireNonNull(((MainActivity) context).getSupportActionBar()).setTitle(((LiveHolder) holder).title.getText().toString());
+                    Objects.requireNonNull(((MainActivity) context).getSupportActionBar()).setTitle(section.getTitle());
                     ((MainActivity) context).bottomNavigationView(5);
-                }
-            });
+                });
+            } else {
+                blogHolder.viewAll.setVisibility(View.GONE);
+            }
         }
         else if (holder instanceof LatestAds latestAds) {
             if (Boolean.TRUE.equals(ads)){
@@ -446,22 +324,14 @@ public class AdapterHome extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public int getItemViewType(int position) {
-        return switch (arrayList.get(position).getType()) {
-            case "slider" -> VIEW_BANNER;
-            case "live" -> VIEW_LIVE;
-            case "recent" -> VIEW_RECENT;
-            case "category" -> VIEW_CATEGORIES;
-            case "event" -> VIEW_EVENT;
-            case "ads" -> VIEW_ADS;
-            // Unknown types treated as live sections rather than showing an endless spinner
-            default -> VIEW_LIVE;
-        };
+        // Unknown types were filtered out by buildRows, so every row has a real view type.
+        return viewTypeOf(arrayList.get(position).getType());
     }
 
     InterAdListener interAdListener = (position, type) -> {
-        if (type.equals(context.getString(R.string.live))) {
-            Intent intent = new Intent(context, VideoDetailsActivity.class);
-            intent.putExtra("post_id", arrayList.get(clickPos).getArrayListLive().get(position).getId());
+        if (type.equals(TYPE_BLOG)) {
+            Intent intent = new Intent(context, BlogPostActivity.class);
+            intent.putExtra(BlogPostActivity.EXTRA_POST_ID, arrayList.get(clickPos).getArrayListLive().get(position).getId());
             context.startActivity(intent);
         } else if (type.equals(context.getString(R.string.categories))){
             FragmentBlog blogFrag = FragmentBlog.newInstance(
@@ -474,10 +344,6 @@ public class AdapterHome extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                 .add(R.id.fragment, blogFrag, arrayList.get(clickPos).getArrayListCategories().get(position).getName())
                 .addToBackStack(arrayList.get(clickPos).getArrayListCategories().get(position).getName())
                 .commit();
-        } else if (type.equals(context.getString(R.string.live_event))) {
-            Intent intent = new Intent(context, VideoDetailsActivity.class);
-            intent.putExtra("post_id", arrayList.get(clickPos).getArrayListEvent().get(position).getPostId());
-            context.startActivity(intent);
         }
     };
 }

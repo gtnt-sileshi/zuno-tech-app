@@ -6,6 +6,8 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_home_ban"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
-
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/_16sdp"
+        android:paddingEnd="@dimen/_16sdp" />
 </RelativeLayout>

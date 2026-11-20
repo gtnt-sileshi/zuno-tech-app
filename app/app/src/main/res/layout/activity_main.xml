@@ -20,8 +20,14 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/row_nav_header"
-        app:itemIconTint="?ns_bg_dark"
-        app:itemTextColor="?ns_bg_dark"
+        android:theme="@style/ThemeOverlay.NavDrawer"
+        app:itemIconTint="@color/nav_item_icon_color"
+        app:itemTextColor="@color/nav_item_text_color"
+        app:itemTextAppearance="@style/NavDrawerItemText"
+        app:itemBackground="@drawable/bg_nav_item_selector"
+        app:itemHorizontalPadding="16dp"
+        app:itemIconPadding="12dp"
+        app:itemMaxLines="1"
         android:background="?ns_bg"
         app:menu="@menu/activity_main_drawer"/>
 

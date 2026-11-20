@@ -13,7 +13,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/_100sdp"
-        android:background="@drawable/bg_splash_full">
+        android:background="@drawable/bg_about">
 
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"

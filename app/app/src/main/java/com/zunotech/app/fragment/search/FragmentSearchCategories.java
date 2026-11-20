@@ -176,23 +176,8 @@ public class FragmentSearchCategories extends Fragment {
     };
 
     private void openByType(ItemCat cat) {
-        androidx.fragment.app.Fragment frag;
-        if (ItemCat.TYPE_LIVE.equals(cat.getType())) {
-            frag = new com.zunotech.app.fragment.online.FragmentLatest();
-            android.os.Bundle args = new android.os.Bundle();
-            args.putString("cat_id", cat.getId());
-            args.putString("cat_name", cat.getName());
-            frag.setArguments(args);
-        } else if (ItemCat.TYPE_RADIO.equals(cat.getType())) {
-            frag = new com.zunotech.app.fragment.online.FragmentRadio();
-            android.os.Bundle args = new android.os.Bundle();
-            args.putString("cat_id", cat.getId());
-            args.putString("cat_name", cat.getName());
-            frag.setArguments(args);
-        } else {
-            frag = FragmentBlog.newInstance(
-                Method.METHOD_BLOG_BY_CAT, cat.getId(), "", cat.getName());
-        }
+        androidx.fragment.app.Fragment frag = FragmentBlog.newInstance(
+            Method.METHOD_BLOG_BY_CAT, cat.getId(), "", cat.getName());
         androidx.fragment.app.FragmentManager fm = getParentFragmentManager();
         androidx.fragment.app.FragmentTransaction ft = fm.beginTransaction();
         ft.setTransition(androidx.fragment.app.FragmentTransaction.TRANSIT_FRAGMENT_OPEN);

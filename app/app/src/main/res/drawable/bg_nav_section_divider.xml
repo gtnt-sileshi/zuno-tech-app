@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 1dp ns_border divider with 16dp inset, used between group_stream and group_more -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="16dp"
+    android:insetRight="16dp">
+    <shape android:shape="rectangle">
+        <size android:height="1dp" />
+        <solid android:color="?attr/ns_border" />
+    </shape>
+</inset>

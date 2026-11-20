@@ -1,5 +1,6 @@
 package com.zunotech.app.callback;
 
+import com.zunotech.app.utils.advertising.AdConfig;
 import java.io.Serial;
 import java.io.Serializable;
 
@@ -100,21 +101,7 @@ public class Callback implements Serializable {
     public static final String PAGE_NATIVE_CAT = "category_native";
 
     public static final String AD_TYPE_ADMOB = "admob";
-    public static final String AD_TYPE_STARTAPP = "startapp";
-    public static final String AD_TYPE_UNITY = "unity";
-    public static final String AD_TYPE_APPLOVIN = "applovin";
-    public static final String AD_TYPE_IRONSOURCE = "ironsource";
-    public static final String AD_TYPE_META = "meta";
-    public static final String AD_TYPE_YANDEX = "yandex";
-    public static final String AD_TYPE_WORTISE = "wortise";
 
-    private static String adNetwork = AD_TYPE_ADMOB;
-    public static String getAdNetwork() {
-        return adNetwork;
-    }
-    public static void setAdNetwork(String network) {
-        adNetwork = network;
-    }
 
     private static Boolean isAdsStatus = false;
     public static Boolean getIsAdsStatus() {
@@ -166,6 +153,15 @@ public class Callback implements Serializable {
         rewardCredit = count;
     }
 
+    // Parsed AdMob configuration; the single decision point for shouldRequest(format).
+    private static AdConfig adConfig = AdConfig.fromJson(null);
+    public static AdConfig getAdConfig() {
+        return adConfig;
+    }
+    public static void setAdConfig(AdConfig config) {
+        adConfig = config == null ? AdConfig.fromJson(null) : config;
+    }
+
     // ADMOB ---------------------------------------------------------------------------------------
     private static String admobPublisherID = "";
     public static String getAdmobPublisherID() {
@@ -215,181 +211,7 @@ public class Callback implements Serializable {
         admobOpenAdID = openAdID;
     }
 
-    // STARTAPP ------------------------------------------------------------------------------------
-    private static String startappAppID = "";
-    public static String getStartappAppID() {
-        return startappAppID;
-    }
-    public static void setStartappAppID(String appID) {
-        startappAppID = appID;
-    }
-
-    // UNITY ---------------------------------------------------------------------------------------
-    private static String unityGameID = "";
-    public static String getUnityGameID() {
-        return unityGameID;
-    }
-    public static void setUnityGameID(String gameID) {
-        unityGameID = gameID;
-    }
-
-    private static String unityBannerAdID = "";
-    public static String getUnityBannerAdID() {
-        return unityBannerAdID;
-    }
-    public static void setUnityBannerAdID(String bannerAdID) {
-        unityBannerAdID = bannerAdID;
-    }
-
-    private static String unityInterstitialAdID = "";
-    public static String getUnityInterstitialAdID() {
-        return unityInterstitialAdID;
-    }
-    public static void setUnityInterstitialAdID(String interstitialAdID) {
-        unityInterstitialAdID = interstitialAdID;
-    }
-
-    private static String unityRewardAdID = "";
-    public static String getUnityRewardAdID() {
-        return unityRewardAdID;
-    }
-    public static void setUnityRewardAdID(String rewardAdID) {
-        unityRewardAdID = rewardAdID;
-    }
-
-    // IRONSOURCE ----------------------------------------------------------------------------------
-    private static String ironsourceAppKey = "";
-    public static String getIronsourceAppKey() {
-        return ironsourceAppKey;
-    }
-    public static void setIronsourceAppKey(String appKey) {
-        ironsourceAppKey = appKey;
-    }
-
-    // WORTISE -------------------------------------------------------------------------------------
-    private static String wortiseAppID = "";
-    public static String getWortiseAppID() {
-        return wortiseAppID;
-    }
-    public static void setWortiseAppID(String appID) {
-        wortiseAppID = appID;
-    }
-
-    private static String wortiseBannerAdID = "";
-    public static String getWortiseBannerAdID() {
-        return wortiseBannerAdID;
-    }
-    public static void setWortiseBannerAdID(String bannerAdID) {
-        wortiseBannerAdID = bannerAdID;
-    }
-
-    private static String wortiseInterstitialAdID = "";
-    public static String getWortiseInterstitialAdID() {
-        return wortiseInterstitialAdID;
-    }
-    public static void setWortiseInterstitialAdID(String interstitialAdID) {
-        wortiseInterstitialAdID = interstitialAdID;
-    }
-
-    private static String wortiseNativeAdID = "";
-    public static String getWortiseNativeAdID() {
-        return wortiseNativeAdID;
-    }
-    public static void setWortiseNativeAdID(String nativeAdID) {
-        wortiseNativeAdID = nativeAdID;
-    }
-
-    private static String wortiseOpenAdID = "";
-    public static String getWortiseOpenAdID() {
-        return wortiseOpenAdID;
-    }
-    public static void setWortiseOpenAdID(String openAdID) {
-        wortiseOpenAdID = openAdID;
-    }
-
-    private static String wortiseRewardAdID = "";
-    public static String getWortiseRewardAdID() {
-        return wortiseRewardAdID;
-    }
-    public static void setWortiseRewardAdID(String rewardAdID) {
-        wortiseRewardAdID = rewardAdID;
-    }
-
-    //APPLOVIN -------------------------------------------------------------------------------------
-    private static String applovinBannerAdID = "";
-    public static String getApplovinBannerAdID() {
-        return applovinBannerAdID;
-    }
-    public static void setApplovinBannerAdID(String bannerAdID) {
-        applovinBannerAdID = bannerAdID;
-    }
-
-    private static String applovinInterstitialAdID = "";
-    public static String getApplovinInterstitialAdID() {
-        return applovinInterstitialAdID;
-    }
-    public static void setApplovinInterstitialAdID(String interstitialAdID) {
-        applovinInterstitialAdID = interstitialAdID;
-    }
-
-    private static String applovinNativeAdID = "";
-    public static String getApplovinNativeAdID() {
-        return applovinNativeAdID;
-    }
-    public static void setApplovinNativeAdID(String nativeAdID) {
-        applovinNativeAdID = nativeAdID;
-    }
-
-    private static String applovinOpenAdID = "";
-    public static String getApplovinOpenAdID() {
-        return applovinOpenAdID;
-    }
-    public static void setApplovinOpenAdID(String openAdID) {
-        applovinOpenAdID = openAdID;
-    }
-
-    private static String applovinRewardAdID = "";
-    public static String getApplovinRewardAdID() {
-        return applovinRewardAdID;
-    }
-    public static void setApplovinRewardAdID(String rewardAdID) {
-        applovinRewardAdID = rewardAdID;
-    }
-
-    // YANDEX --------------------------------------------------------------------------------------
-    private static String yandexBannerAdID = "";
-    public static String getYandexBannerAdID() {
-        return yandexBannerAdID;
-    }
-    public static void setYandexBannerAdID(String bannerAdID) {
-        yandexBannerAdID = bannerAdID;
-    }
-
-    private static String yandexInterstitialAdID = "";
-    public static String getYandexInterstitialAdID() {
-        return yandexInterstitialAdID;
-    }
-    public static void setYandexInterstitialAdID(String interstitialAdID) {
-        yandexInterstitialAdID = interstitialAdID;
-    }
-
-    private static String yandexNativeAdID = "";
-    public static String getYandexNativeAdID() {
-        return yandexNativeAdID;
-    }
-    public static void setYandexNativeAdID(String nativeAdID) {
-        yandexNativeAdID = nativeAdID;
-    }
-
-    private static String yandexOpenAdID = "";
-    public static String getYandexOpenAdID() {
-        return yandexOpenAdID;
-    }
-    public static void setYandexOpenAdID(String openAdID) {
-        yandexOpenAdID = openAdID;
-    }
-
-    //Advertising isSupported ----------------------------------------------------------------------
+//Advertising isSupported ----------------------------------------------------------------------
     private static Boolean isOpenAd = false;
     public static Boolean getIsOpenAd() {
         return isOpenAd;

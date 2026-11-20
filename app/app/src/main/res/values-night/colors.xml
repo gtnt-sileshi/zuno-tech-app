@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Skeleton bone is darker in night mode -->
-    <color name="skeleton_bone">#131C30</color>
+    <!-- Shared state and splash tokens (U5, dark) -->
+    <color name="state_error">#F97066</color>
+    <color name="state_on_error">#3B0A06</color>
+    <color name="state_info">#7CB6FF</color>
+    <color name="splash_bg_top">#06122B</color>
+    <color name="splash_wave">#13317A</color>
+    <color name="splash_text_primary">#FFFFFF</color>
+    <color name="splash_text_secondary">#CCE0FAF7</color>
+    <color name="splash_progress_track">#33FFFFFF</color>
+    <color name="splash_progress_fill">@color/ns_dark_primary</color>
 </resources>

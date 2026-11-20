@@ -11,8 +11,8 @@ android {
         applicationId "com.zunotech.app"
         minSdk 24
         targetSdk 36
-        versionCode 5
-        versionName "1.0.4"
+        versionCode 6
+        versionName "1.1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
@@ -75,6 +75,12 @@ android {
         }
     }
 
+    testOptions {
+        unitTests.includeAndroidResources = true
+        unitTests.all {
+            useJUnitPlatform()
+        }
+    }
     lint {
         disable 'OldTargetApi', 'GradleDynamicVersion'
     }
@@ -93,16 +99,15 @@ dependencies {
     implementation libs.credentials.manager
     implementation libs.credentials.play.services
     implementation libs.google.identity
-    implementation libs.bundles.media3
-    implementation libs.play.cast.framework
-    implementation libs.bundles.exoplayer
     implementation libs.lifecycle.process
     implementation libs.lifecycle.runtime
     annotationProcessor libs.lifecycle.compiler
     implementation libs.shimmer
-    // Only include the custom decoder extensions from libs/ — the core ExoPlayer
-    // engine, extractor and UI are pulled via Maven (bundles.media3 + bundles.exoplayer)
-    // and must NOT be duplicated here; doing so causes NoClassDefFoundError /
-    // AbstractMethodError at runtime due to version mismatches.
-    implementation fileTree(dir: "libs", include: ["lib-decoder-*.aar"])
+    // Local JVM tests: jqwik runs on the JUnit Platform; the vintage engine keeps JUnit4 tests running.
+    testImplementation libs.jqwik
+    testImplementation libs.junit.vintage.engine
+    testImplementation libs.org.json
+    testImplementation libs.robolectric
+    testImplementation libs.accessibility.test.framework
+    testRuntimeOnly libs.junit.platform.launcher
 }

@@ -1,5 +1,6 @@
 package com.zunotech.app.activity;
 
+import com.zunotech.app.utils.advertising.AdFormat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -50,15 +51,8 @@ import com.zunotech.app.fragment.online.FragmentCategories;
 import com.zunotech.app.interfaces.AboutListener;
 import com.zunotech.app.utils.IfSupported;
 import com.zunotech.app.utils.advertising.AdManagerInterAdmob;
-import com.zunotech.app.utils.advertising.AdManagerInterApplovin;
-import com.zunotech.app.utils.advertising.AdManagerInterStartApp;
-import com.zunotech.app.utils.advertising.AdManagerInterUnity;
-import com.zunotech.app.utils.advertising.AdManagerInterYandex;
 import com.zunotech.app.utils.advertising.GDPRChecker;
 import com.zunotech.app.utils.advertising.RewardAdAdmob;
-import com.zunotech.app.utils.advertising.RewardAdApplovin;
-import com.zunotech.app.utils.advertising.RewardAdStartApp;
-import com.zunotech.app.utils.advertising.RewardAdUnity;
 import com.zunotech.app.utils.helper.DBHelper;
 import com.zunotech.app.utils.helper.Helper;
 import com.zunotech.app.utils.helper.SPHelper;
@@ -282,59 +276,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
     private void initAds() {
         SPHelper spHelper = new SPHelper(this);
-        if (Boolean.TRUE.equals(Callback.getIsInterAd()) && spHelper.getIsAdOn()) {
-            switch (Callback.getAdNetwork()) {
-                case Callback.AD_TYPE_ADMOB :
-                    AdManagerInterAdmob adManagerInterAdmob = new AdManagerInterAdmob(getApplicationContext());
-                    adManagerInterAdmob.createAd();
-                    break;
-                case Callback.AD_TYPE_STARTAPP :
-                    AdManagerInterStartApp adManagerInterStartApp = new AdManagerInterStartApp(getApplicationContext());
-                    adManagerInterStartApp.createAd();
-                    break;
-                case Callback.AD_TYPE_APPLOVIN :
-                    AdManagerInterApplovin adManagerInterApplovin = new AdManagerInterApplovin(MainActivity.this);
-                    adManagerInterApplovin.createAd();
-                    break;
-                case Callback.AD_TYPE_YANDEX :
-                    AdManagerInterYandex adManagerInterYandex = new AdManagerInterYandex(MainActivity.this);
-                    adManagerInterYandex.createAd();
-                    break;
-                case Callback.AD_TYPE_WORTISE :
-                    // Wortise removed
-                    break;
-                case Callback.AD_TYPE_UNITY :
-                    AdManagerInterUnity adManagerInterUnity = new AdManagerInterUnity();
-                    adManagerInterUnity.createAd();
-                    break;
-                default:
-                    break;
-            }
+        if (Boolean.TRUE.equals(Callback.getIsInterAd()) && spHelper.getIsAdOn()
+                && Callback.getAdConfig().shouldRequest(AdFormat.INTERSTITIAL)) {
+            AdManagerInterAdmob adManagerInterAdmob = new AdManagerInterAdmob(getApplicationContext());
+            adManagerInterAdmob.createAd();
         }
-        if (Boolean.TRUE.equals(Callback.getIsRewardAd()) && spHelper.getIsAdOn()) {
-            switch (Callback.getAdNetwork()) {
-                case Callback.AD_TYPE_ADMOB :
-                    RewardAdAdmob rewardAdAdmob = new RewardAdAdmob(getApplicationContext());
-                    rewardAdAdmob.createAd();
-                    break;
-                case Callback.AD_TYPE_STARTAPP :
-                    RewardAdStartApp rewardAdStartApp = new RewardAdStartApp(getApplicationContext());
-                    rewardAdStartApp.createAd();
-                    break;
-                case Callback.AD_TYPE_APPLOVIN :
-                    RewardAdApplovin rewardAdApplovin = new RewardAdApplovin(MainActivity.this);
-                    rewardAdApplovin.createAd();
-                    break;
-                case Callback.AD_TYPE_WORTISE :
-                    // Wortise removed
-                    break;
-                case Callback.AD_TYPE_UNITY :
-                    RewardAdUnity rewardAdUnity = new RewardAdUnity();
-                    rewardAdUnity.createAd();
-                    break;
-                default:
-                    break;
-            }
+        if (Boolean.TRUE.equals(Callback.getIsRewardAd()) && spHelper.getIsAdOn()
+                && Callback.getAdConfig().shouldRequest(AdFormat.REWARD)) {
+            RewardAdAdmob rewardAdAdmob = new RewardAdAdmob(getApplicationContext());
+            rewardAdAdmob.createAd();
         }
         if (Boolean.TRUE.equals(Callback.getIsOpenAd()) && spHelper.getIsAdOn()) {
             MyApplication app = (MyApplication) getApplication();

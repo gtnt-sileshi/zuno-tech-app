@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Active drawer item pill: 12dp radius, brand tint from the theme -->
+<inset xmlns:android="http://schemas.android.com/apk/res/android"
+    android:insetLeft="8dp"
+    android:insetRight="8dp"
+    android:insetTop="2dp"
+    android:insetBottom="2dp">
+    <shape android:shape="rectangle">
+        <corners android:radius="@dimen/radius_card" />
+        <solid android:color="?attr/ns_primary_sub" />
+    </shape>
+</inset>

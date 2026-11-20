@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Zuno Tech splash background — deep navy to brand blue gradient -->
+<!-- Splash window background: splash tokens, same in day and night, no flash -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
     <gradient
-        android:angle="135"
-        android:startColor="#06122B"
-        android:centerColor="#13317A"
-        android:endColor="#2563EB"
+        android:angle="160"
+        android:startColor="@color/splash_bg_top"
+        android:endColor="@color/splash_wave"
         android:type="linear" />
 </shape>

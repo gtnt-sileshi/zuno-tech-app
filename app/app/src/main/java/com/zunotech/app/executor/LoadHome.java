@@ -14,7 +14,6 @@ import com.zunotech.app.interfaces.HomeListener;
 import com.zunotech.app.item.ItemBlogPost;
 import com.zunotech.app.item.ItemCat;
 import com.zunotech.app.item.ItemData;
-import com.zunotech.app.item.ItemEvent;
 import com.zunotech.app.item.ItemHomeSlider;
 import com.zunotech.app.item.ItemPost;
 import com.zunotech.app.utils.ApplicationUtil;
@@ -29,7 +28,7 @@ import okhttp3.RequestBody;
  *   "slider":        [...banner objects],
  *   "latest_posts":  [...blog post objects],
  *   "home_sections": [
- *     { "home_id", "home_title", "home_type": "blog"|"live"|"category", "home_content": [...] }
+ *     { "home_id", "home_title", "home_type": "blog"|"category", "home_content": [...] }
  *   ]
  * }
  */
@@ -140,38 +139,6 @@ public class LoadHome extends AsyncTaskExecutor<String, String, String> {
                             sectionPost.setArrayListCategories(cats);
                             break;
                         }
-                        case "event": {
-                            ArrayList<ItemEvent> events = new ArrayList<>();
-                            for (int i = 0; i < content.length(); i++) {
-                                JSONObject e = content.getJSONObject(i);
-                                String thumbOne = e.optString("team_one_thumbnail", "").replace(" ", "%20");
-                                String thumbTwo = e.optString("team_two_thumbnail", "").replace(" ", "%20");
-                                if (thumbOne.isEmpty()) thumbOne = "null";
-                                if (thumbTwo.isEmpty()) thumbTwo = "null";
-                                events.add(new ItemEvent(
-                                    e.optString("id", ""), e.optString("post_id", ""),
-                                    e.optString("event_title", ""), e.optString("event_time", ""),
-                                    e.optString("event_date", ""),
-                                    e.optString("team_title_one", ""), thumbOne,
-                                    e.optString("team_title_two", ""), thumbTwo
-                                ));
-                            }
-                            sectionPost.setArrayListEvent(events);
-                            break;
-                        }
-                        case "live": {
-                            ArrayList<ItemData> channels = new ArrayList<>();
-                            for (int i = 0; i < content.length(); i++) {
-                                JSONObject c = content.getJSONObject(i);
-                                String img = c.optString("image", "").replace(" ", "%20");
-                                if (img.isEmpty()) img = "null";
-                                channels.add(new ItemData(
-                                    c.optString("id", ""), c.optString("live_title", ""), img
-                                ));
-                            }
-                            sectionPost.setArrayListLive(channels);
-                            break;
-                        }
                         default: {
                             // "blog" or any future type — map to ItemData using title + featured_image
                             ArrayList<ItemData> blogItems = new ArrayList<>();
@@ -179,7 +146,7 @@ public class LoadHome extends AsyncTaskExecutor<String, String, String> {
                                 JSONObject p = content.getJSONObject(i);
                                 String img = p.optString("image", p.optString("featured_image", "")).replace(" ", "%20");
                                 if (img.isEmpty()) img = "null";
-                                String title = p.optString("title", p.optString("live_title", ""));
+                                String title = p.optString("title", "");
                                 blogItems.add(new ItemData(p.optString("id", ""), title, img));
                             }
                             sectionPost.setArrayListLive(blogItems);

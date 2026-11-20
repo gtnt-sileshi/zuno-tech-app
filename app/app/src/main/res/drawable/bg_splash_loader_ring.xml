@@ -7,7 +7,7 @@
             android:useLevel="false"
             android:innerRadiusRatio="2.5"
             android:thicknessRatio="14">
-            <solid android:color="#1FFFFFFF" />
+            <solid android:color="@color/splash_progress_track" />
         </shape>
     </item>
     <item android:id="@android:id/progress">
@@ -16,10 +16,7 @@
             android:useLevel="true"
             android:innerRadiusRatio="2.5"
             android:thicknessRatio="14">
-            <gradient
-                android:type="sweep"
-                android:startColor="#0EA5E9"
-                android:endColor="#2563EB" />
+            <solid android:color="@color/splash_progress_fill" />
         </shape>
     </item>
 </layer-list>

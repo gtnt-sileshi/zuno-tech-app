@@ -2,7 +2,7 @@
 <!-- Zuno Tech — topic card. Rounded square thumbnail + title + blue chevron -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/rl_live_tv"
+    android:id="@+id/rl_cat_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
@@ -19,7 +19,7 @@
 
     <!-- Topic thumbnail (rounded square) -->
     <com.google.android.material.imageview.ShapeableImageView
-        android:id="@+id/iv_live_tv"
+        android:id="@+id/iv_cat_logo"
         android:layout_width="@dimen/_48sdp"
         android:layout_height="@dimen/_48sdp"
         android:scaleType="centerCrop"

@@ -49,7 +49,6 @@
     <color name="ns_black">#FF000000</color>
     <color name="ns_white">#FFFFFFFF</color>
     <color name="ns_yellow_50">#FFF3E0</color>
-    <color name="ns_star_gold">#F59E0B</color>
 
     <!-- Aliases required by drawables -->
     <color name="black">#FF000000</color>
@@ -81,7 +80,6 @@
 
     <!-- ── Semantic UI colors ─────────────────────────────────────── -->
     <!-- LIVE badge -->
-    <color name="news_live_red">#EF4444</color>
     <!-- Breaking / alert badge — amber -->
     <color name="news_breaking_amber">#F59E0B</color>
     <!-- Toolbar underline / accent strip — blue -->
@@ -90,7 +88,6 @@
     <color name="news_scrim_dark">#CC000000</color>
 
     <!-- Skeleton loading bone — light default, overridden to dark in values-night -->
-    <color name="skeleton_bone">#DCE6F5</color>
 
     <!-- Danger button — muted surface grey, adapts per theme -->
     <color name="ns_classic_danger_btn">#E2E8F0</color>
@@ -104,4 +101,14 @@
     <color name="ns_blue_surface">#0C1830</color>
     <color name="ns_grey_surface">#161B22</color>
 
+    <!-- Shared state and splash tokens (U5, light) -->
+    <color name="state_error">#B42318</color>
+    <color name="state_on_error">#FFFFFF</color>
+    <color name="state_info">#1D4ED8</color>
+    <color name="splash_bg_top">@color/ns_classic_bg</color>
+    <color name="splash_wave">@color/ns_classic_bg_sub</color>
+    <color name="splash_text_primary">#0A1330</color>
+    <color name="splash_text_secondary">#B30A1330</color>
+    <color name="splash_progress_track">@color/ns_classic_primary_sub</color>
+    <color name="splash_progress_fill">@color/ns_classic_primary</color>
 </resources>

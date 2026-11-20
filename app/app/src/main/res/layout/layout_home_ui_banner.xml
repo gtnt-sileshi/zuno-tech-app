@@ -7,9 +7,10 @@
         android:id="@+id/viewPager_home"
         android:layout_width="match_parent"
         android:layout_height="180dp"
-        android:layout_marginTop="10dp" />
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginEnd="@dimen/_16sdp" />
 
-    <!-- Simple dots indicator — no external library needed -->
+    <!-- Simple dots indicator, no external library needed -->
     <LinearLayout
         android:id="@+id/ll_dots"
         android:layout_width="wrap_content"
@@ -17,7 +18,5 @@
         android:layout_below="@+id/viewPager_home"
         android:layout_centerHorizontal="true"
         android:orientation="horizontal"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp" />
-
+        android:paddingTop="@dimen/_8sdp" />
 </RelativeLayout>

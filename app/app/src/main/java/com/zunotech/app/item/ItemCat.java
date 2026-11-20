@@ -4,11 +4,9 @@ import java.io.Serializable;
 
 public class ItemCat implements Serializable {
 
-    // category_type values from the API: "all" | "blog" | "live" | "radio"
+    // category_type values from the API: "all" | "blog"
     public static final String TYPE_ALL   = "all";
     public static final String TYPE_BLOG  = "blog";
-    public static final String TYPE_LIVE  = "live";
-    public static final String TYPE_RADIO = "radio";
 
     private final String id;
     private final String name;
@@ -33,6 +31,4 @@ public class ItemCat implements Serializable {
     public String getType()  { return type; }
 
     public boolean isForBlog()  { return TYPE_BLOG.equals(type) || TYPE_ALL.equals(type); }
-    public boolean isForLive()  { return TYPE_LIVE.equals(type) || TYPE_ALL.equals(type); }
-    public boolean isForRadio() { return TYPE_RADIO.equals(type) || TYPE_ALL.equals(type); }
 }

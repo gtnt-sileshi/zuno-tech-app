@@ -24,6 +24,7 @@
             app:titleTextColor="?ns_bg_dark"
             app:navigationIconTint="?ns_bg_dark"
             app:navigationIcon="@drawable/ic_menu"
+            app:navigationContentDescription="@string/navigation_drawer_open"
             app:title="@string/app_name"
             app:titleCentered="true"
             app:theme="@style/ZunoTech.ToolbarTheme" />
@@ -60,6 +61,11 @@
         app:menu="@menu/bottom_nav_menu"
         app:labelVisibilityMode="labeled"
         app:itemIconTint="@color/bottom_nav_item_color"
-        app:itemTextColor="@color/bottom_nav_item_color" />
+        app:itemTextColor="@color/bottom_nav_item_color"
+        app:itemIconSize="24dp"
+        app:itemMinHeight="@dimen/touch_min"
+        app:itemTextAppearanceActive="@style/BottomNavLabel.Active"
+        app:itemTextAppearanceInactive="@style/BottomNavLabel"
+        app:itemActiveIndicatorStyle="@null" />
 
 </RelativeLayout>

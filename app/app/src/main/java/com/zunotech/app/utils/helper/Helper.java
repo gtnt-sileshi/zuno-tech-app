@@ -1,5 +1,6 @@
 package com.zunotech.app.utils.helper;
 
+import com.zunotech.app.utils.advertising.AdFormat;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -21,15 +22,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresPermission;
 import android.widget.CheckBox;
 
-import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.MaxAdListener;
-import com.applovin.mediation.MaxError;
-import com.applovin.mediation.MaxReward;
-import com.applovin.mediation.MaxRewardedAdListener;
-import com.applovin.mediation.ads.MaxAdView;
-import com.applovin.sdk.AppLovinSdk;
 import com.google.ads.mediation.admob.AdMobAdapter;
-import com.google.ads.mediation.facebook.FacebookMediationAdapter;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdSize;
 import com.google.android.gms.ads.AdView;
@@ -39,26 +32,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.ironsource.mediationsdk.ISBannerSize;
-import com.ironsource.mediationsdk.IronSource;
-import com.ironsource.mediationsdk.IronSourceBannerLayout;
-import com.ironsource.mediationsdk.adunit.adapter.utility.AdInfo;
-import com.ironsource.mediationsdk.logger.IronSourceError;
-import com.ironsource.mediationsdk.sdk.LevelPlayInterstitialListener;
-import com.startapp.sdk.ads.banner.Banner;
-import com.startapp.sdk.adsbase.Ad;
-import com.startapp.sdk.adsbase.StartAppAd;
-import com.startapp.sdk.adsbase.StartAppSDK;
-import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
-import com.unity3d.ads.IUnityAdsInitializationListener;
-import com.unity3d.ads.IUnityAdsShowListener;
-import com.unity3d.ads.UnityAds;
-import com.unity3d.services.banners.BannerView;
-import com.unity3d.services.banners.UnityBannerSize;
-import com.yandex.mobile.ads.banner.BannerAdView;
-import com.yandex.mobile.ads.common.AdError;
-import com.yandex.mobile.ads.common.ImpressionData;
-import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -75,15 +48,8 @@ import com.zunotech.app.interfaces.RewardAdListener;
 import com.zunotech.app.utils.ApplicationUtil;
 import com.zunotech.app.utils.advertising.AdManagerInterAdmob;
 import com.zunotech.app.utils.advertising.AdmobBannerCache;
-import com.zunotech.app.utils.advertising.AdManagerInterApplovin;
-import com.zunotech.app.utils.advertising.AdManagerInterStartApp;
-import com.zunotech.app.utils.advertising.AdManagerInterUnity;
-import com.zunotech.app.utils.advertising.AdManagerInterYandex;
 import com.zunotech.app.utils.advertising.GDPRChecker;
 import com.zunotech.app.utils.advertising.RewardAdAdmob;
-import com.zunotech.app.utils.advertising.RewardAdApplovin;
-import com.zunotech.app.utils.advertising.RewardAdStartApp;
-import com.zunotech.app.utils.advertising.RewardAdUnity;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -183,55 +149,6 @@ public class Helper {
                 jsObj.addProperty("search_type", loginType);
             }
 
-        // ── Live TV (supplementary) ────────────────────────────────
-        } else if (Method.METHOD_LATEST.equals(helper_name)) {
-            jsObj.addProperty("page", String.valueOf(page));
-        } else if (Method.METHOD_MOST_VIEWED.equals(helper_name)) {
-            jsObj.addProperty("page", String.valueOf(page));
-        } else if (Method.METHOD_CAT_ID.equals(helper_name)) {
-            jsObj.addProperty("cat_id", catID);
-            jsObj.addProperty("page", String.valueOf(page));
-        } else if (Method.METHOD_LIVE_ID.equals(helper_name)) {
-            jsObj.addProperty("post_id", itemID);
-        } else if (Method.METHOD_POST_BY_BANNER.equals(helper_name)) {
-            jsObj.addProperty("post_id", itemID);
-        } else if (Method.METHOD_SEARCH_LIVE.equals(helper_name)) {
-            jsObj.addProperty("page", String.valueOf(page));
-            jsObj.addProperty("search_text", searchText);
-
-        // ── Events (supplementary) ────────────────────────────────
-        } else if (Method.METHOD_EVENT.equals(helper_name)) {
-            jsObj.addProperty("page", String.valueOf(page));
-
-        // ── Radio (supplementary) ─────────────────────────────────
-        } else if (Method.METHOD_RADIO_LIST.equals(helper_name)) {
-            jsObj.addProperty("page", String.valueOf(page));
-            jsObj.addProperty("device_id", deviceID);
-        } else if (Method.METHOD_RADIO_BY_CAT.equals(helper_name)) {
-            jsObj.addProperty("cat_id", catID);
-            jsObj.addProperty("page", String.valueOf(page));
-            jsObj.addProperty("device_id", deviceID);
-        } else if (Method.METHOD_RADIO_ID.equals(helper_name)) {
-            jsObj.addProperty("post_id", itemID);
-            jsObj.addProperty("device_id", deviceID);
-        } else if (Method.METHOD_RADIO_FAV.equals(helper_name)) {
-            jsObj.addProperty("page", String.valueOf(page));
-            jsObj.addProperty("device_id", deviceID);
-        } else if (Method.METHOD_SEARCH_RADIO.equals(helper_name)) {
-            jsObj.addProperty("page", String.valueOf(page));
-            jsObj.addProperty("search_text", searchText);
-            jsObj.addProperty("device_id", deviceID);
-
-        // ── Ratings (device-based) ────────────────────────────────
-        } else if (Method.METHOD_GET_RATINGS.equals(helper_name)) {
-            jsObj.addProperty("post_id", itemID);
-            jsObj.addProperty("device_id", deviceID);
-        } else if (Method.METHOD_RATINGS.equals(helper_name)) {
-            jsObj.addProperty("post_id", itemID);
-            jsObj.addProperty("device_id", deviceID);
-            jsObj.addProperty("rate", authID);
-            jsObj.addProperty("message", reportMessage);
-
         // ── Reports & suggestions (device-based) ──────────────────
         } else if (Method.METHOD_REPORT.equals(helper_name)) {
             jsObj.addProperty("post_id", itemID);
@@ -243,16 +160,7 @@ public class Helper {
             jsObj.addProperty("suggest_message", reportMessage);
             jsObj.addProperty("device_id", deviceID);
 
-        // ── Favourites (device-based, TV & Radio) ─────────────────
-        } else if (Method.METHOD_LIVE_FAV.equals(helper_name)
-                || Method.METHOD_RADIO_FAV_TOG.equals(helper_name)) {
-            jsObj.addProperty("post_id", itemID);
-            jsObj.addProperty("device_id", deviceID);
-        } else if (Method.METHOD_LIVE_FAV_LIST.equals(helper_name)) {
-            jsObj.addProperty("page", String.valueOf(page));
-            jsObj.addProperty("device_id", deviceID);
         }
-
         // All requests use multipart form with base64-encoded JSON in "data" field
         return new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
@@ -261,108 +169,26 @@ public class Helper {
     }
 
     public void initializeAds() {
-        if (Callback.getAdNetwork().equals(Callback.AD_TYPE_ADMOB) || Callback.getAdNetwork().equals(Callback.AD_TYPE_META)) {
-            // Initialise once per process, off the main thread (as Google recommends).
-            // The completion callback runs on the main thread.
-            if (ADMOB_INIT_STARTED.compareAndSet(false, true)) {
-                final Context appCtx = ctx.getApplicationContext();
-                new Thread(() -> MobileAds.initialize(appCtx, initializationStatus -> {
-                    // Preload as soon as the SDK is ready so the first eligible click has an ad.
-                    if (Boolean.TRUE.equals(Callback.getIsInterAd())) {
-                        new AdManagerInterAdmob(appCtx).createAd();
-                    }
-                }), "admob-init").start();
-            }
-        }
-        if (Callback.getAdNetwork().equals(Callback.AD_TYPE_STARTAPP)) {
-            StartAppSDK.init(ctx, Callback.getStartappAppID(), false);
-            StartAppAd.disableSplash();
-            StartAppSDK.setUserConsent(ctx, "pas", System.currentTimeMillis(), new GDPRChecker(ctx).canLoadAd());
-        }
-        if (Callback.getAdNetwork().equals(Callback.AD_TYPE_APPLOVIN) && (!AppLovinSdk.getInstance(ctx).isInitialized())) {
-            AppLovinSdk.initializeSdk(ctx);
-            AppLovinSdk.getInstance(ctx).setMediationProvider("max");
-            // Only register test device IDs in debug builds to avoid test-mode ads in production.
-            if (BuildConfig.DEBUG) {
-                AppLovinSdk.getInstance(ctx).getSettings()
-                        .setTestDeviceAdvertisingIds(Arrays.asList("656822d9-18de-4120-994e-44d4245a4d63", "249d75a2-1ef2-8ff9-8885-c50384843a66"));
-            }
-        }
-        if (Callback.getAdNetwork().equals(Callback.AD_TYPE_IRONSOURCE)) {
-            IronSource.init(ctx, Callback.getIronsourceAppKey(), () -> {
-            });
-        }
-        if (Callback.getAdNetwork().equals(Callback.AD_TYPE_UNITY)) {
-            UnityAds.initialize(ctx, Callback.getUnityGameID(), true,
-                    new IUnityAdsInitializationListener() {
-                    @Override
-                    public void onInitializationComplete() {
-                        // document why this method is empty
-                    }
-
-                    @Override
-                    public void onInitializationFailed(UnityAds.UnityAdsInitializationError error,
-                                                       String message) {
-                        // document why this method is empty
-                    }
-            });
-        }
-        if (Callback.getAdNetwork().equals(Callback.AD_TYPE_YANDEX)) {
-            com.yandex.mobile.ads.common.YandexAds.initialize(ctx, () -> {
-            });
+        // Initialise once per process, off the main thread (as Google recommends).
+        // The completion callback runs on the main thread.
+        if (ADMOB_INIT_STARTED.compareAndSet(false, true)) {
+            final Context appCtx = ctx.getApplicationContext();
+            new Thread(() -> MobileAds.initialize(appCtx, initializationStatus -> {
+                // Preload as soon as the SDK is ready so the first eligible click has an ad.
+                if (Boolean.TRUE.equals(Callback.getIsInterAd())
+                        && Callback.getAdConfig().shouldRequest(AdFormat.INTERSTITIAL)) {
+                    new AdManagerInterAdmob(appCtx).createAd();
+                }
+            }), "admob-init").start();
         }
     }
 
     public Object showBannerAd(LinearLayout linearLayout, String page) {
         if (isBannerAd(page)){
-            switch (Callback.getAdNetwork()) {
-                case Callback.AD_TYPE_ADMOB:
-                case Callback.AD_TYPE_META:
-                    if (!(ctx instanceof Activity) || Callback.getAdmobBannerAdID().isEmpty()) {
-                        return null;
-                    }
-                    return AdmobBannerCache.attach((Activity) ctx, linearLayout);
-                case Callback.AD_TYPE_WORTISE:
-                    return null;
-                case Callback.AD_TYPE_STARTAPP:                    Banner startAppBanner = new Banner(ctx);
-                    startAppBanner.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.
-                            LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
-                    linearLayout.addView(startAppBanner);
-                    startAppBanner.loadAd();
-                    return startAppBanner;
-                case Callback.AD_TYPE_UNITY:
-                    BannerView bannerView = new BannerView((Activity) ctx,
-                            Callback.getUnityBannerAdID(), new UnityBannerSize(320, 50));
-                    linearLayout.addView(bannerView);
-                    bannerView.load();
-                    return bannerView;
-                case Callback.AD_TYPE_APPLOVIN:
-                    MaxAdView adView = new MaxAdView(Callback.getApplovinBannerAdID(), ctx);
-                    int width = ViewGroup.LayoutParams.MATCH_PARENT;
-                    int heightPx = ctx.getResources().getDimensionPixelSize(R.dimen.banner_height);
-                    adView.setLayoutParams(new FrameLayout.LayoutParams(width, heightPx));
-                    linearLayout.addView(adView);
-                    adView.loadAd();
-                    return adView;
-                case Callback.AD_TYPE_IRONSOURCE:
-                    IronSourceBannerLayout iBannerAd  = IronSource.createBanner((Activity) ctx, ISBannerSize.BANNER);
-                    linearLayout.addView(iBannerAd);
-                    IronSource.loadBanner(iBannerAd);
-                    return iBannerAd;
-                case Callback.AD_TYPE_YANDEX:
-                    BannerAdView yBannerAd = new BannerAdView(ctx);
-                    int width2 = ViewGroup.LayoutParams.MATCH_PARENT;
-                    int heightPx2 = ctx.getResources().getDimensionPixelSize(R.dimen.banner_height);
-                    yBannerAd.setLayoutParams(new FrameLayout.LayoutParams(width2, heightPx2));
-                    // SDK 8: ad unit ID moves from setAdUnitId() into AdRequest.Builder(id)
-                    com.yandex.mobile.ads.common.AdRequest yadRequest =
-                            new com.yandex.mobile.ads.common.AdRequest.Builder(Callback.getYandexBannerAdID()).build();
-                    linearLayout.addView(yBannerAd);
-                    yBannerAd.loadAd(yadRequest);
-                    return yBannerAd;
-                default:
-                    return null;
+            if (!(ctx instanceof Activity) || !Callback.getAdConfig().shouldRequest(AdFormat.BANNER)) {
+                return null;
             }
+            return AdmobBannerCache.attach((Activity) ctx, linearLayout);
         } else {
             return null;
         }
@@ -370,9 +196,6 @@ public class Helper {
 
     public void showInterAd(final int pos, final String type) {
         if (isInterAd()){
-            switch (Callback.getAdNetwork()) {
-                case Callback.AD_TYPE_ADMOB:
-                case Callback.AD_TYPE_META:
                     final AdManagerInterAdmob adManagerInterAdmob = new AdManagerInterAdmob(ctx);
                     if (adManagerInterAdmob.getAd() != null) {
                         adManagerInterAdmob.getAd().setFullScreenContentCallback(new FullScreenContentCallback() {
@@ -400,214 +223,6 @@ public class Helper {
                         adManagerInterAdmob.createAd();
                         interAdListener.onClick(pos, type);
                     }
-                    break;
-                case Callback.AD_TYPE_STARTAPP:
-                    final AdManagerInterStartApp adManagerInterStartApp = new AdManagerInterStartApp(ctx);
-                    if (adManagerInterStartApp.getAd() != null && adManagerInterStartApp.getAd().isReady()) {
-                        adManagerInterStartApp.getAd().showAd(new AdDisplayListener() {
-                            @Override
-                            public void adHidden(Ad ad) {
-                                AdManagerInterStartApp.setAd(null);
-                                adManagerInterStartApp.createAd();
-                                interAdListener.onClick(pos, type);
-                            }
-
-                            @Override
-                            public void adDisplayed(Ad ad) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void adClicked(Ad ad) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void adNotDisplayed(Ad ad) {
-                                AdManagerInterStartApp.setAd(null);
-                                adManagerInterStartApp.createAd();
-                                interAdListener.onClick(pos, type);
-                            }
-                        });
-                    } else {
-                        AdManagerInterStartApp.setAd(null);
-                        adManagerInterStartApp.createAd();
-                        interAdListener.onClick(pos, type);
-                    }
-                    break;
-                case Callback.AD_TYPE_UNITY:
-                    final AdManagerInterUnity adManagerInterUnity = new AdManagerInterUnity();
-                    if (AdManagerInterUnity.getAd()) {
-                        UnityAds.show((Activity) ctx, Callback.getUnityInterstitialAdID(), new IUnityAdsShowListener() {
-                            @Override
-                            public void onUnityAdsShowFailure(String placementId,
-                                                              UnityAds.UnityAdsShowError error,
-                                                              String message) {
-                                AdManagerInterUnity.setAd();
-                                adManagerInterUnity.createAd();
-                                interAdListener.onClick(pos, type);
-                            }
-
-                            @Override
-                            public void onUnityAdsShowStart(String placementId) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onUnityAdsShowClick(String placementId) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onUnityAdsShowComplete(String placementId,
-                                                               UnityAds.UnityAdsShowCompletionState state) {
-                                AdManagerInterUnity.setAd();
-                                adManagerInterUnity.createAd();
-                                interAdListener.onClick(pos, type);
-                            }
-                        });
-                    } else {
-                        AdManagerInterUnity.setAd();
-                        adManagerInterUnity.createAd();
-                        interAdListener.onClick(pos, type);
-                    }
-                    break;
-                case Callback.AD_TYPE_APPLOVIN:
-                    final AdManagerInterApplovin adManagerInterApplovin = new AdManagerInterApplovin(ctx);
-                    if (adManagerInterApplovin.getAd() != null && adManagerInterApplovin.getAd().isReady()) {
-                        adManagerInterApplovin.getAd().setListener(new MaxAdListener() {
-                            @Override
-                            public void onAdLoaded(@NonNull MaxAd ad) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onAdDisplayed(@NonNull MaxAd ad) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onAdHidden(@NonNull MaxAd ad) {
-                                AdManagerInterApplovin.setAd(null);
-                                adManagerInterApplovin.createAd();
-                                interAdListener.onClick(pos, type);
-                            }
-
-                            @Override
-                            public void onAdClicked(@NonNull MaxAd ad) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onAdLoadFailed(@NonNull String adUnitId, @NonNull MaxError error) {
-                                AdManagerInterApplovin.setAd(null);
-                                adManagerInterApplovin.createAd();
-                                interAdListener.onClick(pos, type);
-                            }
-
-                            @Override
-                            public void onAdDisplayFailed(@NonNull MaxAd ad, @NonNull MaxError error) {
-                                AdManagerInterApplovin.setAd(null);
-                                adManagerInterApplovin.createAd();
-                                interAdListener.onClick(pos, type);
-                            }
-                        });
-                        adManagerInterApplovin.getAd().showAd();
-                    } else {
-                        AdManagerInterStartApp.setAd(null);
-                        adManagerInterApplovin.createAd();
-                        interAdListener.onClick(pos, type);
-                    }
-                    break;
-                case Callback.AD_TYPE_IRONSOURCE:
-                    if (IronSource.isInterstitialReady()) {
-                        IronSource.setLevelPlayInterstitialListener(new LevelPlayInterstitialListener() {
-                            @Override
-                            public void onAdReady(AdInfo adInfo) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onAdLoadFailed(IronSourceError ironSourceError) {
-                                interAdListener.onClick(pos, type);
-                            }
-
-                            @Override
-                            public void onAdOpened(AdInfo adInfo) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onAdShowSucceeded(AdInfo adInfo) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onAdShowFailed(IronSourceError ironSourceError, AdInfo adInfo) {
-                                interAdListener.onClick(pos, type);
-                            }
-
-                            @Override
-                            public void onAdClicked(AdInfo adInfo) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onAdClosed(AdInfo adInfo) {
-                                interAdListener.onClick(pos, type);
-                            }
-                        });
-                        IronSource.showInterstitial();
-                    } else {
-                        interAdListener.onClick(pos, type);
-                    }
-                    IronSource.init(ctx, Callback.getIronsourceAppKey(), IronSource.AD_UNIT.INTERSTITIAL);
-                    IronSource.loadInterstitial();
-                    break;
-                case Callback.AD_TYPE_YANDEX:
-                    final AdManagerInterYandex adManagerInterYandex = new AdManagerInterYandex(ctx);
-                    if (adManagerInterYandex.getAd() != null) {
-                        adManagerInterYandex.getAd().setAdEventListener(new InterstitialAdEventListener() {
-                            @Override
-                            public void onAdShown() {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onAdFailedToShow(@NonNull AdError adError) {
-                                interAdListener.onClick(pos, type);
-                            }
-
-                            @Override
-                            public void onAdDismissed() {
-                                AdManagerInterYandex.setAd(null);
-                                adManagerInterYandex.createAd();
-                                interAdListener.onClick(pos, type);
-                            }
-
-                            @Override
-                            public void onAdClicked() {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onAdImpression(@Nullable ImpressionData impressionData) {
-                                // this method is empty
-                            }
-                        });
-                        adManagerInterYandex.getAd().show((Activity) ctx);
-                    } else {
-                        AdManagerInterYandex.setAd(null);
-                        adManagerInterYandex.createAd();
-                        interAdListener.onClick(pos, type);
-                    }
-                    break;
-                case Callback.AD_TYPE_WORTISE:
-                    interAdListener.onClick(pos, type);
-                    break;
-                default : interAdListener.onClick(pos, type);
-                    break;
-            }
         } else {
             interAdListener.onClick(pos, type);
         }
@@ -628,9 +243,8 @@ public class Helper {
 
 
     public void loadRewardAds(RewardAdListener rewardAdListener, int pos) {
-        if (new GDPRChecker(ctx).canLoadAd()) {
-            switch (Callback.getAdNetwork()) {
-                case Callback.AD_TYPE_ADMOB :
+        if (new GDPRChecker(ctx).canLoadAd()
+                && Callback.getAdConfig().shouldRequest(AdFormat.REWARD)) {
                     final RewardAdAdmob rewardAdAdmob = new RewardAdAdmob(ctx);
                     if (rewardAdAdmob.getAd() != null) {
                         rewardAdAdmob.getAd().setFullScreenContentCallback(new FullScreenContentCallback() {
@@ -658,143 +272,6 @@ public class Helper {
                         rewardAdAdmob.createAd();
                         rewardAdListener.onClick(false, pos);
                     }
-                    break;
-                case Callback.AD_TYPE_STARTAPP :
-                    final RewardAdStartApp rewardAdStartApp = new RewardAdStartApp(ctx);
-                    if (rewardAdStartApp.getAd() != null && rewardAdStartApp.getAd().isReady()) {
-                        rewardAdStartApp.getAd().showAd(new AdDisplayListener() {
-                            @Override
-                            public void adHidden(Ad ad) {
-                                RewardAdStartApp.setAd(null);
-                                rewardAdStartApp.createAd();
-                                if (isRewarded) {
-                                    rewardAdListener.onClick(true, pos);
-                                }
-                            }
-
-                            @Override
-                            public void adDisplayed(Ad ad) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void adClicked(Ad ad) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void adNotDisplayed(Ad ad) {
-                                RewardAdStartApp.setAd(null);
-                                rewardAdStartApp.createAd();
-                                rewardAdListener.onClick(false, pos);
-                            }
-                        });
-                        rewardAdStartApp.getAd().setVideoListener(() -> isRewarded = true);
-                    } else {
-                        RewardAdStartApp.setAd(null);
-                        rewardAdStartApp.createAd();
-                        rewardAdListener.onClick(false, pos);
-                    }
-                    break;
-                case Callback.AD_TYPE_APPLOVIN :
-                    final RewardAdApplovin rewardAdApplovin = new RewardAdApplovin(ctx);
-                    if (RewardAdApplovin.getAd() != null && RewardAdApplovin.getAd().isReady()) {
-                        RewardAdApplovin.getAd().setListener(new MaxRewardedAdListener() {
-
-
-                            @Override
-                            public void onAdLoaded(@NonNull MaxAd maxAd) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onAdDisplayed(@NonNull MaxAd maxAd) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onAdHidden(@NonNull MaxAd maxAd) {
-                                RewardAdApplovin.setAd(null);
-                                rewardAdApplovin.createAd();
-                                if (isRewarded) {
-                                    rewardAdListener.onClick(true, pos);
-                                }
-                            }
-
-                            @Override
-                            public void onAdClicked(@NonNull MaxAd maxAd) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onAdLoadFailed(@NonNull String s, @NonNull MaxError maxError) {
-                                RewardAdApplovin.setAd(null);
-                                rewardAdApplovin.createAd();
-                                rewardAdListener.onClick(false, pos);
-                            }
-
-                            @Override
-                            public void onAdDisplayFailed(@NonNull MaxAd maxAd,
-                                                          @NonNull MaxError maxError) {
-                                RewardAdApplovin.setAd(null);
-                                rewardAdApplovin.createAd();
-                                rewardAdListener.onClick(false, pos);
-                            }
-
-                            @Override
-                            public void onUserRewarded(@NonNull MaxAd maxAd,
-                                                       @NonNull MaxReward maxReward) {
-                                isRewarded = true;
-                            }
-
-                        });
-                        RewardAdApplovin.getAd().showAd();
-                    } else {
-                        RewardAdApplovin.setAd(null);
-                        rewardAdApplovin.createAd();
-                        rewardAdListener.onClick(false, pos);
-                    }
-                    break;
-                case Callback.AD_TYPE_UNITY :
-                    final RewardAdUnity rewardAdUnity = new RewardAdUnity();
-                    if (RewardAdUnity.isAdLoaded) {
-                        UnityAds.show((Activity) ctx, Callback.getUnityRewardAdID(), new IUnityAdsShowListener() {
-                            @Override
-                            public void onUnityAdsShowFailure(String placementId,
-                                                              UnityAds.UnityAdsShowError error,
-                                                              String message) {
-                                RewardAdUnity.setAd(false);
-                                rewardAdUnity.createAd();
-                                rewardAdListener.onClick(false, pos);
-                            }
-
-                            @Override
-                            public void onUnityAdsShowStart(String placementId) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onUnityAdsShowClick(String placementId) {
-                                // this method is empty
-                            }
-
-                            @Override
-                            public void onUnityAdsShowComplete(String placementId,
-                                                               UnityAds.UnityAdsShowCompletionState state) {
-                                RewardAdUnity.setAd(false);
-                                rewardAdUnity.createAd();
-                                rewardAdListener.onClick(true, pos);
-                            }
-                        });
-                    } else {
-                        RewardAdUnity.setAd(false);
-                        rewardAdUnity.createAd();
-                        rewardAdListener.onClick(false, pos);
-                    }
-                    break;
-                default:
-                    break;
-            }
         } else {
             rewardAdListener.onClick(false, pos);
         }
@@ -821,6 +298,7 @@ public class Helper {
     private boolean isInterAd() {
         if (isNetworkAvailable() && Boolean.TRUE.equals(Callback.getIsInterAd())
                 && Boolean.TRUE.equals(Callback.getIsAdsStatus())
+                && Callback.getAdConfig().shouldRequest(AdFormat.INTERSTITIAL)
                 && new GDPRChecker(ctx).canLoadAd()) {
             Callback.setAdCount(Callback.getAdCount() + 1);
             long now = SystemClock.elapsedRealtime();

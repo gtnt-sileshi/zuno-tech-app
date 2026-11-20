@@ -1,5 +1,6 @@
 package com.zunotech.app.fragment.online;
 
+import com.zunotech.app.utils.advertising.AdFormat;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -115,36 +116,11 @@ public class FragmentCategories extends Fragment {
 
     private void openByCategory(int position) {
         ItemCat cat = arrayList.get(position);
-        String type = cat.getType();
-
-        if (ItemCat.TYPE_LIVE.equals(type)) {
-            // Navigate to TV list filtered by this category
-            com.zunotech.app.fragment.online.FragmentLatest tvFrag =
-                new com.zunotech.app.fragment.online.FragmentLatest();
-            android.os.Bundle args = new android.os.Bundle();
-            args.putString("cat_id", cat.getId());
-            args.putString("cat_name", cat.getName());
-            tvFrag.setArguments(args);
-            loadChildFrag(tvFrag, cat.getName());
-
-        } else if (ItemCat.TYPE_RADIO.equals(type)) {
-            // Navigate to Radio list filtered by this category
-            com.zunotech.app.fragment.online.FragmentRadio radioFrag =
-                new com.zunotech.app.fragment.online.FragmentRadio();
-            android.os.Bundle args = new android.os.Bundle();
-            args.putString("cat_id", cat.getId());
-            args.putString("cat_name", cat.getName());
-            radioFrag.setArguments(args);
-            loadChildFrag(radioFrag, cat.getName());
-
-        } else {
-            // 'blog' or 'all' → open blog post list for this category
-            FragmentBlog blogFrag = FragmentBlog.newInstance(
-                Method.METHOD_BLOG_BY_CAT, cat.getId(), "", cat.getName());
-            loadChildFrag(blogFrag, cat.getName());
-        }
+        // 'blog' or 'all' → open blog post list for this category
+        FragmentBlog blogFrag = FragmentBlog.newInstance(
+            Method.METHOD_BLOG_BY_CAT, cat.getId(), "", cat.getName());
+        loadChildFrag(blogFrag, cat.getName());
     }
-
     private void loadChildFrag(androidx.fragment.app.Fragment frag, String name) {
         FragmentManager fm = getParentFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -252,8 +228,7 @@ public class FragmentCategories extends Fragment {
 
     private void loadNativeAds() {
         if (helper.canLoadNativeAds(requireContext(),Callback.PAGE_NATIVE_CAT)
-                && Callback.getAdNetwork().equals(Callback.AD_TYPE_ADMOB)
-                || Callback.getAdNetwork().equals(Callback.AD_TYPE_META) && arrayList.size() >= 10) {
+                && Callback.getAdConfig().shouldRequest(AdFormat.NATIVE)) {
             AdLoader.Builder builder = new AdLoader.Builder(requireContext(), Callback.getAdmobNativeAdID());
 
             AdRequest adRequest = new AdRequest.Builder().build();

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Drawer item text: at least 14sp -->
+    <style name="NavDrawerItemText" parent="TextAppearance.MaterialComponents.Subtitle2">
+        <item name="android:textSize">@dimen/text_body</item>
+    </style>
+
+    <!-- Applied to the NavigationView: 56dp items and the themed section divider -->
+    <style name="ThemeOverlay.NavDrawer" parent="">
+        <item name="listPreferredItemHeightSmall">56dp</item>
+        <item name="android:listDivider">@drawable/bg_nav_section_divider</item>
+    </style>
+</resources>

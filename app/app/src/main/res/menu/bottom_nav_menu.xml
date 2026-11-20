@@ -1,19 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/tv_nav_home"
-        android:icon="@drawable/ic_home"
-        android:title="@string/nav_home" />
-
+        android:icon="@drawable/ic_bnav_home"
+        android:title="@string/nav_home"
+        app:contentDescription="@string/nav_home"
+        app:tooltipText="@string/nav_home" />
     <item
         android:id="@+id/tv_nav_topics"
-        android:icon="@drawable/ic_folders"
-        android:title="@string/topics" />
-
+        android:icon="@drawable/ic_bnav_topics"
+        android:title="@string/topics"
+        app:contentDescription="@string/topics"
+        app:tooltipText="@string/topics" />
     <item
         android:id="@+id/tv_nav_saved"
-        android:icon="@drawable/ic_star"
-        android:title="@string/saved" />
-
+        android:icon="@drawable/ic_bnav_saved"
+        android:title="@string/saved"
+        app:contentDescription="@string/saved"
+        app:tooltipText="@string/saved" />
 </menu>

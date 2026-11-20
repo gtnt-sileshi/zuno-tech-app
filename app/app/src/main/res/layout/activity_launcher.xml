@@ -19,7 +19,8 @@
         android:layout_height="@dimen/_170sdp"
         android:layout_centerInParent="true"
         android:alpha="0.7"
-        android:contentDescription="@string/todo"
+        android:contentDescription="@null"
+        android:importantForAccessibility="no"
         android:src="@drawable/splash_glow_orb" />
 
     <!-- Centre stack: emblem-in-ring + wordmark + tagline -->
@@ -44,6 +45,7 @@
                 android:layout_gravity="center"
                 android:max="100"
                 android:progress="0"
+                android:contentDescription="@string/splash_loading"
                 android:progressDrawable="@drawable/bg_splash_loader_ring"
                 android:visibility="gone" />
 
@@ -69,7 +71,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Zuno"
-                android:textColor="@color/white"
+                android:textColor="@color/splash_text_primary"
                 android:textSize="@dimen/_24ssp"
                 android:textStyle="bold"
                 android:letterSpacing="0.02" />
@@ -90,14 +92,16 @@
             android:layout_width="@dimen/_40sdp"
             android:layout_height="@dimen/_2sdp"
             android:layout_marginTop="@dimen/_8sdp"
-            android:background="@drawable/bg_splash_accent" />
+            android:background="@drawable/bg_splash_accent"
+            android:contentDescription="@null"
+            android:importantForAccessibility="no" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_8sdp"
             android:text="@string/splash_tagline"
-            android:textColor="#B3CDE7FF"
+            android:textColor="@color/splash_text_secondary"
             android:textSize="@dimen/_12ssp"
             android:letterSpacing="0.06" />
 
@@ -107,7 +111,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
             android:text="@string/splash_loading"
-            android:textColor="#66FFFFFF"
+            android:textColor="@color/splash_text_secondary"
             android:textSize="@dimen/_10ssp"
             android:letterSpacing="0.08"
             android:visibility="invisible" />
@@ -123,7 +127,8 @@
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="@dimen/_24sdp"
         android:text="v1.0.0"
-        android:textColor="#40FFFFFF"
+        android:alpha="0.6"
+        android:textColor="@color/splash_text_primary"
         android:textSize="@dimen/_10ssp"
         android:letterSpacing="0.05" />
 

@@ -2,32 +2,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
-
-    <!-- Bottom-nav tabs mirrored in the drawer -->
-    <item
-        android:id="@+id/nav_home"
-        android:icon="@drawable/ic_home"
-        android:title="@string/nav_home" />
-
-    <item
-        android:id="@+id/nav_topics"
-        android:icon="@drawable/ic_folders"
-        android:title="@string/topics" />
-
-    <item
-        android:id="@+id/nav_saved"
-        android:icon="@drawable/ic_star"
-        android:title="@string/saved" />
-
-    <!-- Supplementary -->
-    <item
-        android:id="@+id/nav_suggest"
-        android:icon="@drawable/ic_function_add"
-        android:title="@string/suggestion" />
-
-    <item
-        android:id="@+id/nav_settings"
-        android:icon="@drawable/ic_setting"
-        android:title="@string/nav_settings" />
-
+    <!-- ── BROWSE section ── -->
+    <group android:id="@+id/group_stream" android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_home"
+            android:icon="@drawable/ic_home"
+            android:title="@string/nav_home" />
+        <item
+            android:id="@+id/nav_topics"
+            android:icon="@drawable/ic_folders"
+            android:title="@string/topics" />
+        <item
+            android:id="@+id/nav_saved"
+            android:icon="@drawable/ic_star"
+            android:title="@string/saved" />
+    </group>
+    <!-- ── MORE section ── -->
+    <group android:id="@+id/group_more" android:checkableBehavior="none">
+        <item
+            android:id="@+id/nav_suggest"
+            android:icon="@drawable/ic_function_add"
+            android:title="@string/suggestion" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_setting"
+            android:title="@string/nav_settings" />
+    </group>
 </menu>

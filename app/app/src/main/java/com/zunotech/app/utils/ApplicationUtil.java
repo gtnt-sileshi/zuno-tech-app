@@ -17,14 +17,6 @@ import android.view.WindowMetrics;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.OptIn;
-import androidx.media3.common.MimeTypes;
-import androidx.media3.common.util.UnstableApi;
-import androidx.media3.exoplayer.DefaultRenderersFactory;
-import androidx.media3.exoplayer.ExoPlayer;
-import androidx.media3.extractor.DefaultExtractorsFactory;
-import androidx.media3.extractor.ts.DefaultTsPayloadReaderFactory;
-import androidx.media3.extractor.ts.TsExtractor;
 
 import org.jetbrains.annotations.Contract;
 
@@ -42,7 +34,6 @@ import javax.net.ssl.HttpsURLConnection;
 
 import com.zunotech.app.BuildConfig;
 import com.zunotech.app.R;
-import com.zunotech.app.utils.player.CustomPlayerView;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -227,37 +218,6 @@ public class ApplicationUtil {
         return orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 
-    @NonNull
-    @OptIn(markerClass = androidx.media3.common.util.UnstableApi.class)
-    public static DefaultExtractorsFactory getDefaultExtractorsFactory() {
-        return new DefaultExtractorsFactory()
-                .setTsExtractorFlags(DefaultTsPayloadReaderFactory.FLAG_ENABLE_HDMV_DTS_AUDIO_STREAMS)
-                .setTsExtractorTimestampSearchBytes(1500 * TsExtractor.TS_PACKET_SIZE);
-    }
-
-    @NonNull
-    @OptIn(markerClass = androidx.media3.common.util.UnstableApi.class)
-    public static DefaultRenderersFactory getDefaultRenderersFactory(Context context) {
-        int extensionRendererMode = DefaultRenderersFactory.EXTENSION_RENDERER_MODE_ON;
-        DefaultRenderersFactory renderersFactory = new DefaultRenderersFactory(context);
-        renderersFactory.setExtensionRendererMode(extensionRendererMode);
-        return renderersFactory;
-    }
-
-    // Player --------------------------------------------------------------------------------------
-    @OptIn(markerClass = UnstableApi.class)
-    public static void showText(final CustomPlayerView playerView, final String text) {
-        showText(playerView, text, 1200);
-    }
-
-    @OptIn(markerClass = UnstableApi.class)
-    public static void showText(@NonNull final CustomPlayerView playerView, final String text, final long timeout) {
-        playerView.removeCallbacks(playerView.textClearRunnable);
-        playerView.clearIcon();
-        playerView.setCustomErrorMessage(text);
-        playerView.postDelayed(playerView.textClearRunnable, timeout);
-    }
-
     public static int getBatteryDrawable(int status, int level, int scale) {
         float batteryLevel = (level / (float) scale) * 100;
         boolean isCharging;
@@ -311,85 +271,5 @@ public class ApplicationUtil {
         } catch (Exception e) {
             return "Unknown resolution";
         }
-    }
-
-    @OptIn(markerClass = UnstableApi.class)
-    @NonNull
-    public static String getInfoAudio( ExoPlayer exoPlayer) {
-        String infoAudio = "Audio Sample Rate: N/A" + "\n\n"
-                + "Audio Channels: N/A" + "\n\n"
-                + "Audio Type: N/A"+"\n\n"
-                + "Audio MIME Type: N/A"+"\n";
-
-        if (exoPlayer == null){
-            return infoAudio;
-        }
-        if (exoPlayer.getAudioFormat() != null){
-            int audioSampleRate = exoPlayer.getAudioFormat().sampleRate;
-            int audioChannels = exoPlayer.getAudioFormat().channelCount;
-            String audioMimeType = exoPlayer.getAudioFormat().sampleMimeType;
-
-            infoAudio = "Audio Sample Rate: " + audioSampleRate + "\n\n"
-                    + "Audio Channels: " + audioChannels + "\n\n"
-                    + "Audio Type: "+ formatAudioFromMime(audioMimeType) +"\n\n"
-                    + "Audio MIME Type: " + audioMimeType +"\n";
-
-        }
-        return infoAudio;
-    }
-
-    @OptIn(markerClass = UnstableApi.class)
-    @NonNull
-    public static String getInfoVideo(ExoPlayer exoPlayer) {
-        String infoVideo = "Video Quality : Unknown resolution" + "\n\n"
-                + "Video Width: N/A" + "\n\n"
-                + "Video Height: N/A" + "\n";
-
-        if (exoPlayer == null){
-            return infoVideo;
-        }
-        if (exoPlayer.getVideoFormat() != null){
-            int videoWidth = exoPlayer.getVideoFormat().width;
-            int videoHeight = exoPlayer.getVideoFormat().height;
-            infoVideo = "Video Quality: " + ApplicationUtil.getVideoResolution(videoHeight)+ "\n\n"
-                    + "Video Width: " + videoWidth + "\n\n"
-                    + "Video Height: " + videoHeight + "\n";
-        }
-        return infoVideo;
-    }
-
-    public static String formatAudioFromMime(final String mimeType) {
-        if (mimeType == null) {
-            return "N/A";
-        }
-        return switch (mimeType) {
-            case MimeTypes.AUDIO_DTS -> "DTS";
-            case MimeTypes.AUDIO_DTS_HD -> "DTS-HD";
-            case MimeTypes.AUDIO_DTS_EXPRESS -> "DTS Express";
-            case MimeTypes.AUDIO_TRUEHD -> "TrueHD";
-            case MimeTypes.AUDIO_AC3 -> "AC-3";
-            case MimeTypes.AUDIO_E_AC3 -> "E-AC-3";
-            case MimeTypes.AUDIO_E_AC3_JOC -> "E-AC-3-JOC";
-            case MimeTypes.AUDIO_AC4 -> "AC-4";
-            case MimeTypes.AUDIO_AAC -> "AAC";
-            case MimeTypes.AUDIO_MPEG -> "MP3";
-            case MimeTypes.AUDIO_MPEG_L2 -> "MP2";
-            case MimeTypes.AUDIO_VORBIS -> "Vorbis";
-            case MimeTypes.AUDIO_OPUS -> "Opus";
-            case MimeTypes.AUDIO_FLAC -> "FLAC";
-            case MimeTypes.AUDIO_ALAC -> "ALAC";
-            case MimeTypes.AUDIO_WAV -> "WAV";
-            case MimeTypes.AUDIO_AMR -> "AMR";
-            case MimeTypes.AUDIO_AMR_NB -> "AMR-NB";
-            case MimeTypes.AUDIO_AMR_WB -> "AMR-WB";
-            case MimeTypes.APPLICATION_PGS -> "PGS";
-            case MimeTypes.APPLICATION_SUBRIP -> "SRT";
-            case MimeTypes.TEXT_SSA -> "SSA";
-            case MimeTypes.TEXT_VTT -> "VTT";
-            case MimeTypes.APPLICATION_TTML -> "TTML";
-            case MimeTypes.APPLICATION_TX3G -> "TX3G";
-            case MimeTypes.APPLICATION_DVBSUBS -> "DVB";
-            default -> mimeType;
-        };
     }
 }

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Bottom navigation height (56dp) + 8dp -->
+    <dimen name="home_list_bottom_padding">64dp</dimen>
+</resources>

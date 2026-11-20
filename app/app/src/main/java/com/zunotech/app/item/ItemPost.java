@@ -11,7 +11,6 @@ public class ItemPost implements Serializable {
 	String page;
 	ArrayList<ItemHomeSlider> arrayListBanner = new ArrayList<>();
 	ArrayList<ItemCat> arrayListCategories = new ArrayList<>();
-	ArrayList<ItemEvent> arrayListEvent = new ArrayList<>();
 	ArrayList<ItemData> arrayListLive = new ArrayList<>();
 
 	public ItemPost(String id, String title, String type, String page) {
@@ -53,13 +52,6 @@ public class ItemPost implements Serializable {
 	}
 	public void setArrayListCategories(ArrayList<ItemCat> arrayListCategories) {
 		this.arrayListCategories.addAll(arrayListCategories);
-	}
-
-	public ArrayList<ItemEvent> getArrayListEvent() {
-		return arrayListEvent;
-	}
-	public void setArrayListEvent(ArrayList<ItemEvent> arrayListEvent) {
-		this.arrayListEvent.addAll(arrayListEvent);
 	}
 
 	public ArrayList<ItemData> getArrayListLive() {

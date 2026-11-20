@@ -1,5 +1,6 @@
 package com.zunotech.app.adapter;
 
+import com.zunotech.app.utils.advertising.AdFormat;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -16,18 +17,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.nativeAds.MaxNativeAdListener;
-import com.applovin.mediation.nativeAds.MaxNativeAdLoader;
-import com.applovin.mediation.nativeAds.MaxNativeAdView;
 import com.google.android.gms.ads.nativead.MediaView;
 import com.google.android.gms.ads.nativead.NativeAd;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.squareup.picasso.Picasso;
-import com.startapp.sdk.ads.nativead.NativeAdPreferences;
-import com.startapp.sdk.ads.nativead.StartAppNativeAd;
-import com.startapp.sdk.adsbase.Ad;
-import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +33,7 @@ import com.zunotech.app.utils.ApplicationUtil;
 
 /**
  * Adapter for blog post list views (FragmentBlog, saved posts, search results).
- * Supports native ads (AdMob/Meta, StartApp, AppLovin MAX) inserted every N posts
+ * Supports native ads (AdMob) inserted every N posts
  * as configured by the admin (native_position setting).
  */
 public class AdapterBlogPost extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -131,9 +124,9 @@ public class AdapterBlogPost extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 && (position + 1) % Callback.getNativeAdShow() == 0) {
             try {
                 if (vh.rlNativeAd.getChildCount() == 0) {
-                    switch (Callback.getAdNetwork()) {
-                        case Callback.AD_TYPE_ADMOB, Callback.AD_TYPE_META -> {
-                            if (isAdLoaded && mNativeAdsAdmob.size() >= 5) {
+                    {
+                            if (isAdLoaded && mNativeAdsAdmob.size() >= 5
+                                && Callback.getAdConfig().shouldRequest(AdFormat.NATIVE)) {
                                 int i = ApplicationUtil.getRandomValue(mNativeAdsAdmob.size() - 1);
                                 @SuppressLint("InflateParams")
                                 NativeAdView adView = (NativeAdView) ((Activity) context)
@@ -145,60 +138,6 @@ public class AdapterBlogPost extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 vh.rlNativeAd.setVisibility(View.VISIBLE);
                             }
                         }
-                        case Callback.AD_TYPE_STARTAPP -> {
-                            StartAppNativeAd nativeAd = new StartAppNativeAd(context);
-                            nativeAd.loadAd(
-                                new NativeAdPreferences()
-                                    .setAdsNumber(1)
-                                    .setAutoBitmapDownload(true)
-                                    .setPrimaryImageSize(2),
-                                new AdEventListener() {
-                                    @Override
-                                    public void onReceiveAd(@NonNull Ad ad) {
-                                        try {
-                                            if (!nativeAd.getNativeAds().isEmpty()) {
-                                                @SuppressLint("InflateParams")
-                                                RelativeLayout adView = (RelativeLayout)
-                                                        ((Activity) context).getLayoutInflater()
-                                                        .inflate(R.layout.layout_native_ad_startapp, null);
-
-                                                ImageView icon        = adView.findViewById(R.id.icon);
-                                                TextView  title       = adView.findViewById(R.id.title);
-                                                TextView  description = adView.findViewById(R.id.description);
-                                                Button    button      = adView.findViewById(R.id.button);
-
-                                                Picasso.get().load(nativeAd.getNativeAds().get(0).getImageUrl()).into(icon);
-                                                title.setText(nativeAd.getNativeAds().get(0).getTitle());
-                                                description.setText(nativeAd.getNativeAds().get(0).getDescription());
-                                                button.setText(nativeAd.getNativeAds().get(0).isApp() ? "Install" : "Open");
-
-                                                vh.rlNativeAd.removeAllViews();
-                                                vh.rlNativeAd.addView(adView);
-                                                vh.rlNativeAd.setVisibility(View.VISIBLE);
-                                            }
-                                        } catch (Exception e) {
-                                            Log.e("AdapterBlogPost", "StartApp native ad failed", e);
-                                        }
-                                    }
-                                    @Override public void onFailedToReceiveAd(Ad ad) {}
-                                });
-                        }
-                        case Callback.AD_TYPE_APPLOVIN -> {
-                            MaxNativeAdLoader loader = new MaxNativeAdLoader(
-                                    Callback.getApplovinNativeAdID(), context);
-                            loader.setNativeAdListener(new MaxNativeAdListener() {
-                                @Override
-                                public void onNativeAdLoaded(MaxNativeAdView nativeAdView,
-                                                             @NonNull MaxAd maxAd) {
-                                    vh.rlNativeAd.removeAllViews();
-                                    vh.rlNativeAd.addView(nativeAdView);
-                                    vh.rlNativeAd.setVisibility(View.VISIBLE);
-                                }
-                            });
-                            loader.loadAd();
-                        }
-                        default -> { /* unsupported network */ }
-                    }
                 }
             } catch (Exception e) {
                 Log.e("AdapterBlogPost", "Native ad bind failed", e);

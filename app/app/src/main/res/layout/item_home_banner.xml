@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@color/ns_yellow_50"
-        app:hv_corner_radius="@dimen/_8sdp"
+        app:hv_corner_radius="@dimen/radius_card"
         android:scaleType="centerCrop" />
 
     <!-- Dark gradient scrim for text legibility -->
@@ -21,23 +21,6 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/bg_banner_scrim" />
 
-    <!-- "LIVE" badge at top-start -->
-    <TextView
-        android:id="@+id/tv_banner_live_tag"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/_8sdp"
-        android:background="@drawable/bg_live_tag"
-        android:paddingStart="@dimen/_8sdp"
-        android:paddingEnd="@dimen/_8sdp"
-        android:paddingTop="@dimen/_3sdp"
-        android:paddingBottom="@dimen/_3sdp"
-        android:text="@string/tag_live"
-        android:textColor="@color/white"
-        android:textSize="@dimen/_10ssp"
-        android:textStyle="bold"
-        android:letterSpacing="0.08"
-        android:visibility="gone" />
 
     <!-- Title + category text at bottom -->
     <LinearLayout

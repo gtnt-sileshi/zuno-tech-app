@@ -5,21 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.applovin.mediation.MaxAd;
-import com.applovin.mediation.MaxAdListener;
-import com.applovin.mediation.MaxError;
-import com.applovin.mediation.ads.MaxAppOpenAd;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.appopen.AppOpenAd;
-import com.startapp.sdk.adsbase.Ad;
-import com.startapp.sdk.adsbase.StartAppAd;
-import com.startapp.sdk.adsbase.adlisteners.AdDisplayListener;
-import com.startapp.sdk.adsbase.adlisteners.AdEventListener;
 
 import java.util.Date;
 
@@ -31,8 +22,6 @@ import com.zunotech.app.interfaces.OnShowAdCompleteListener;
 public class AppOpenAdManager {
 
     private AppOpenAd appOpenAd = null;
-    private MaxAppOpenAd maxAppOpenAd;
-    StartAppAd startAppAd;
     private boolean isLoadingAd = false;
     private long loadTime = 0;
     Context context;
@@ -50,76 +39,29 @@ public class AppOpenAdManager {
         if (Boolean.TRUE.equals(Callback.getIsAppOpenAdShown())) {
             return;
         }
+        if (!Callback.getAdConfig().shouldRequest(AdFormat.APP_OPEN)) {
+            return;
+        }
         if (isLoadingAd || isAdAvailable()) {
             return;
         }
 
         isLoadingAd = true;
 
-        switch (Callback.getAdNetwork()) {
-            case Callback.AD_TYPE_ADMOB:
-            case Callback.AD_TYPE_META:
-                AdRequest request = new AdRequest.Builder().build();
-                AppOpenAd.load(context, Callback.getAdmobOpenAdID(), request, new AppOpenAd.AppOpenAdLoadCallback() {
-                    @Override
-                    public void onAdLoaded(@NonNull AppOpenAd ad) {
-                        appOpenAd = ad;
-                        isLoadingAd = false;
-                        loadTime = (new Date()).getTime();
-                    }
+        AdRequest request = new AdRequest.Builder().build();
+        AppOpenAd.load(context, Callback.getAdmobOpenAdID(), request, new AppOpenAd.AppOpenAdLoadCallback() {
+            @Override
+            public void onAdLoaded(@NonNull AppOpenAd ad) {
+                appOpenAd = ad;
+                isLoadingAd = false;
+                loadTime = (new Date()).getTime();
+            }
 
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                        isLoadingAd = false;
-                    }
-                });
-                break;
-            case Callback.AD_TYPE_APPLOVIN:
-                maxAppOpenAd = new MaxAppOpenAd(Callback.getApplovinOpenAdID(), context);
-                maxAppOpenAd.setListener(new MaxAdListener() {
-                    @Override
-                    public void onAdLoaded(@NonNull MaxAd maxAd) {
-                        isLoadingAd = false;
-                        loadTime = (new Date()).getTime();
-                    }
-
-                    @Override
-                    public void onAdDisplayed(@NonNull MaxAd maxAd) {}
-
-                    @Override
-                    public void onAdHidden(@NonNull MaxAd maxAd) {}
-
-                    @Override
-                    public void onAdClicked(@NonNull MaxAd maxAd) {}
-
-                    @Override
-                    public void onAdLoadFailed(@NonNull String s, @NonNull MaxError maxError) {
-                        isLoadingAd = false;
-                    }
-
-                    @Override
-                    public void onAdDisplayFailed(@NonNull MaxAd maxAd, @NonNull MaxError maxError) {}
-                });
-                maxAppOpenAd.loadAd();
-                break;
-            case Callback.AD_TYPE_STARTAPP:
-                startAppAd = new StartAppAd(context);
-                startAppAd.loadAd(new AdEventListener() {
-                    @Override
-                    public void onReceiveAd(@NonNull Ad ad) {
-                        isLoadingAd = false;
-                        loadTime = (new Date()).getTime();
-                    }
-
-                    @Override
-                    public void onFailedToReceiveAd(@Nullable Ad ad) {
-                        isLoadingAd = false;
-                    }
-                });
-                break;
-            default:
-                break;
-        }
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                isLoadingAd = false;
+            }
+        });
     }
 
     private boolean wasLoadTimeLessThanNHoursAgo() {
@@ -129,11 +71,7 @@ public class AppOpenAdManager {
     }
 
     public boolean isAdAvailable() {
-        return switch (Callback.getAdNetwork()) {
-            case Callback.AD_TYPE_ADMOB, Callback.AD_TYPE_META -> appOpenAd != null && wasLoadTimeLessThanNHoursAgo();
-            case Callback.AD_TYPE_APPLOVIN -> maxAppOpenAd != null && maxAppOpenAd.isReady();
-            default -> false;
-        };
+        return appOpenAd != null && wasLoadTimeLessThanNHoursAgo();
     }
 
     public void showAdIfAvailable(@NonNull final Activity activity) {
@@ -152,89 +90,7 @@ public class AppOpenAdManager {
             return;
         }
 
-        switch (Callback.getAdNetwork()) {
-            case Callback.AD_TYPE_ADMOB:
-            case Callback.AD_TYPE_META:
-                handleAdMobAd(activity, onShowAdCompleteListener);
-                break;
-            case Callback.AD_TYPE_APPLOVIN:
-                handleAppLovinAd(activity, onShowAdCompleteListener);
-                break;
-            case Callback.AD_TYPE_STARTAPP:
-                handleStartAppAd(activity, onShowAdCompleteListener);
-                break;
-            default:
-                break;
-        }
-    }
-
-    private void handleStartAppAd(Activity activity, OnShowAdCompleteListener onShowAdCompleteListener) {
-        startAppAd.showAd(new AdDisplayListener() {
-            @Override
-            public void adHidden(Ad ad) {
-                startAppAd = null;
-                isShowingAd = false;
-                navigateIfLauncher(activity);
-                onShowAdCompleteListener.onShowAdComplete();
-                if (new GDPRChecker(context).canLoadAdOpenAds()) loadAd(activity);
-            }
-
-            @Override
-            public void adDisplayed(Ad ad) {
-                Callback.setIsAppOpenAdShown(true);
-                isShowingAd = true;
-            }
-
-            @Override
-            public void adClicked(Ad ad) {}
-
-            @Override
-            public void adNotDisplayed(Ad ad) {
-                startAppAd = null;
-                isShowingAd = false;
-                onShowAdCompleteListener.onShowAdComplete();
-                if (new GDPRChecker(context).canLoadAdOpenAds()) loadAd(activity);
-            }
-        });
-        isShowingAd = true;
-    }
-
-    private void handleAppLovinAd(Activity activity, OnShowAdCompleteListener onShowAdCompleteListener) {
-        maxAppOpenAd.setListener(new MaxAdListener() {
-            @Override
-            public void onAdHidden(@NonNull MaxAd maxAd) {
-                maxAppOpenAd = null;
-                isShowingAd = false;
-                navigateIfLauncher(activity);
-                onShowAdCompleteListener.onShowAdComplete();
-                if (new GDPRChecker(context).canLoadAdOpenAds()) loadAd(activity);
-            }
-
-            @Override
-            public void onAdClicked(@NonNull MaxAd maxAd) {}
-
-            @Override
-            public void onAdLoadFailed(@NonNull String string, @NonNull MaxError maxError) {}
-
-            @Override
-            public void onAdDisplayFailed(@NonNull MaxAd maxAd, @NonNull MaxError maxError) {
-                maxAppOpenAd = null;
-                isShowingAd = false;
-                onShowAdCompleteListener.onShowAdComplete();
-                if (new GDPRChecker(context).canLoadAdOpenAds()) loadAd(activity);
-            }
-
-            @Override
-            public void onAdLoaded(@NonNull MaxAd maxAd) {}
-
-            @Override
-            public void onAdDisplayed(@NonNull MaxAd maxAd) {
-                Callback.setIsAppOpenAdShown(true);
-                isShowingAd = true;
-            }
-        });
-        isShowingAd = true;
-        maxAppOpenAd.showAd();
+        handleAdMobAd(activity, onShowAdCompleteListener);
     }
 
     private void handleAdMobAd(Activity activity, OnShowAdCompleteListener onShowAdCompleteListener) {

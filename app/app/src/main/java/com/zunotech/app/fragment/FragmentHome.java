@@ -32,6 +32,7 @@ import java.util.Objects;
 
 import com.zunotech.app.R;
 import com.zunotech.app.adapter.home.AdapterHome;
+import com.zunotech.app.adapter.home.HomeSpacingDecoration;
 import com.zunotech.app.callback.Callback;
 import com.zunotech.app.callback.Method;
 import com.zunotech.app.dialog.DialogUtil;
@@ -39,12 +40,10 @@ import com.zunotech.app.executor.LoadHome;
 import com.zunotech.app.fragment.search.FragmentSearch;
 import com.zunotech.app.interfaces.HomeListener;
 import com.zunotech.app.item.ItemPost;
-import com.zunotech.app.utils.helper.DBHelper;
 import com.zunotech.app.utils.helper.Helper;
 
 public class FragmentHome extends Fragment {
 
-    DBHelper dbHelper;
     Helper helper;
     ShimmerFrameLayout shimmerHome;
     FrameLayout frameLayout;
@@ -65,7 +64,6 @@ public class FragmentHome extends Fragment {
         helper = new Helper(getActivity());
 
         arrayList = new ArrayList<>();
-        dbHelper = new DBHelper(getActivity());
 
         shimmerHome = rootView.findViewById(R.id.shimmer_blog);
         frameLayout = rootView.findViewById(R.id.fl_empty);
@@ -74,6 +72,7 @@ public class FragmentHome extends Fragment {
         LinearLayoutManager llm = new LinearLayoutManager(getActivity());
         rv.setLayoutManager(llm);
         rv.setItemAnimator(new DefaultItemAnimator());
+        rv.addItemDecoration(new HomeSpacingDecoration(requireContext()));
 
         loadHome();
 
@@ -109,7 +108,7 @@ public class FragmentHome extends Fragment {
                         setEmpty();
                     }
                 }
-            }, helper.getAPIRequest(Method.METHOD_HOME, 0, dbHelper.getRecentIDs("10"),
+            }, helper.getAPIRequest(Method.METHOD_HOME, 0, "",
                     "", "", "", "", "", "",
                     "", "", "", "", null));
             loadHome.execute();
@@ -119,13 +118,15 @@ public class FragmentHome extends Fragment {
         }
     }
 
-    private void loadHomeEnd(ArrayList<ItemPost> arrayListPost) {
-        if (arrayListPost.isEmpty()) {
+    void loadHomeEnd(ArrayList<ItemPost> arrayListPost) {
+        // Empty and unknown sections add no row. When nothing is left, show the empty state.
+        java.util.List<ItemPost> rows = AdapterHome.buildRows(arrayListPost);
+        if (rows.isEmpty()) {
             errorMsg = getString(R.string.err_no_data_found);
             setEmpty();
             return;
         }
-        arrayList.addAll(arrayListPost);
+        arrayList.addAll(rows);
         if (Boolean.TRUE.equals(Callback.getIsAdsStatus())) {
             arrayList.add(new ItemPost("100", "ads", "ads", "ads"));
         }

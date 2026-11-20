@@ -1,5 +1,6 @@
 package com.zunotech.app.fragment.online;
 
+import com.zunotech.app.utils.advertising.AdFormat;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
@@ -111,8 +112,7 @@ public class FragmentBlog extends Fragment {
         helper.showBannerAd(adView, Callback.PAGE_HOME);
 
         if (helper.canLoadNativeAds(getContext(), Callback.PAGE_NATIVE_POST)
-                && (Callback.getAdNetwork().equals(Callback.AD_TYPE_ADMOB)
-                    || Callback.getAdNetwork().equals(Callback.AD_TYPE_META))) {
+                && Callback.getAdConfig().shouldRequest(AdFormat.NATIVE)) {
             com.google.android.gms.ads.AdLoader adLoader = new com.google.android.gms.ads.AdLoader.Builder(
                     requireContext(), Callback.getAdmobNativeAdID())
                 .forNativeAd(nativeAd -> {

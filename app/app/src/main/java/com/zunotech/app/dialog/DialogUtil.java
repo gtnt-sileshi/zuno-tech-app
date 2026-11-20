@@ -13,8 +13,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.OptIn;
-import androidx.media3.common.util.UnstableApi;
-import androidx.media3.exoplayer.ExoPlayer;
 
 import java.util.Objects;
 
@@ -361,36 +359,6 @@ public class DialogUtil {
         Window window = dialog.getWindow();
         if (window != null){
             window.setLayout(MATCH_PARENT, WRAP_CONTENT);
-        }
-    }
-
-    @OptIn(markerClass = UnstableApi.class)
-    public static void dialogPlayerInfo(Activity ctx, ExoPlayer exoPlayer) {
-        if (exoPlayer != null){
-            if (dialog != null){
-                dialog = null;
-            }
-            dialog = new Dialog(ctx);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.dialog_media_info);
-            dialog.findViewById(R.id.iv_close_vw).setOnClickListener(v -> dialog.dismiss());
-            dialog.findViewById(R.id.iv_back_player_info).setOnClickListener(v -> dialog.dismiss());
-
-            String infoVideo = ApplicationUtil.getInfoVideo(exoPlayer);
-            TextView mediaVideo = dialog.findViewById(R.id.tv_info_video);
-            mediaVideo.setText(infoVideo);
-
-            String infoAudio = ApplicationUtil.getInfoAudio(exoPlayer);
-            TextView mediaAudio = dialog.findViewById(R.id.tv_info_audio);
-            mediaAudio.setText(infoAudio);
-
-            Objects.requireNonNull(dialog.getWindow()).setBackgroundDrawableResource(android.R.color.transparent);
-            dialog.getWindow().getAttributes().windowAnimations = R.style.dialogAnimation;
-            dialog.show();
-            Window window = dialog.getWindow();
-            if (window != null){
-                window.setLayout(MATCH_PARENT, WRAP_CONTENT);
-            }
         }
     }
 

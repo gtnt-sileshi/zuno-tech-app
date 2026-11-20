@@ -32,35 +32,9 @@ public class Method {
     // category_type filter values passed as search_type in METHOD_CAT
     public static final String CAT_TYPE_ALL   = "all";
     public static final String CAT_TYPE_BLOG  = "blog";
-    public static final String CAT_TYPE_LIVE  = "live";
-    public static final String CAT_TYPE_RADIO = "radio";
 
-    // ── Live TV (supplementary) ────────────────────────────────────
-    public static final String METHOD_LATEST         = "get_latest";
-    public static final String METHOD_MOST_VIEWED    = "get_trending";
-    public static final String METHOD_CAT_ID         = "get_cat_by";
-    public static final String METHOD_LIVE_ID        = "get_live_id";
-    public static final String METHOD_SEARCH_LIVE    = "get_search_live";
-    public static final String METHOD_POST_BY_BANNER = "get_banner_by";
-
-    // ── Events (supplementary) ────────────────────────────────────
-    public static final String METHOD_EVENT = "get_event";
-
-    // ── Radio (supplementary) ─────────────────────────────────────
-    public static final String METHOD_RADIO_LIST   = "get_radio_list";
-    public static final String METHOD_RADIO_BY_CAT = "get_radio_by_cat";
-    public static final String METHOD_RADIO_ID     = "get_radio_id";
-    public static final String METHOD_RADIO_FAV    = "get_radio_favourite";
-    public static final String METHOD_SEARCH_RADIO = "get_search_radio";
-
-    // ── Ratings, reports, suggestions (device-based) ──────────────
-    public static final String METHOD_GET_RATINGS = "get_rating";
-    public static final String METHOD_RATINGS     = "post_rating";
+    // ── Reports, suggestions (device-based) ───────────────────────
     public static final String METHOD_REPORT      = "post_report";
     public static final String METHOD_SUGGESTION  = "post_suggest";
 
-    // Favourites (device-based)
-    public static final String METHOD_LIVE_FAV        = "toggle_live_favourite";
-    public static final String METHOD_LIVE_FAV_LIST   = "get_live_favourite";
-    public static final String METHOD_RADIO_FAV_TOG   = "toggle_radio_favourite";
 }

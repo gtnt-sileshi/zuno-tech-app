@@ -1,5 +1,7 @@
 package com.zunotech.app.executor;
 
+import com.zunotech.app.utils.advertising.AdConfig;
+import com.zunotech.app.utils.advertising.AdFormat;
 import android.content.Context;
 
 import org.json.JSONArray;
@@ -114,65 +116,19 @@ public class LoadAbout extends AsyncTaskExecutor<String, String, String> {
 
                     // Ads Network -----------------------------------------------------------------
                     if (c.has("ad_status")){
-                        Boolean isAds = Boolean.parseBoolean(c.getString("ad_status"));
+                        // AdMob only: ad_network is ignored, IDs always come from admob_* keys.
+                        AdConfig adConfig = AdConfig.fromJson(c);
+                        Callback.setAdConfig(adConfig);
+                        Boolean isAds = adConfig.isAdsEnabled();
                         Callback.setIsAdsStatus(isAds);
                         spHelper.setIsads(isAds);
                         if (Boolean.TRUE.equals(isAds)){
-                            // PRIMARY ADS
-                            String adNetwork = c.getString("ad_network");
-                            Callback.setAdNetwork(adNetwork);
-                            switch (adNetwork) {
-                                case Callback.AD_TYPE_ADMOB:
-                                    Callback.setAdmobPublisherID(c.getString("admob_publisher_id"));
-                                    Callback.setAdmobBannerAdID(c.getString("admob_banner_unit_id"));
-                                    Callback.setAdmobInterstitialAdID(c.getString("admob_interstitial_unit_id"));
-                                    Callback.setAdmobNativeAdID(c.getString("admob_native_unit_id"));
-                                    Callback.setAdmobOpenAdID(c.getString("admob_app_open_ad_unit_id"));
-                                    Callback.setAdmobRewardAdID(c.getString("admob_reward_ad_unit_id"));
-                                    break;
-                                case Callback.AD_TYPE_STARTAPP:
-                                    Callback.setStartappAppID(c.getString("startapp_app_id"));
-                                    break;
-                                case Callback.AD_TYPE_UNITY:
-                                    Callback.setUnityGameID(c.getString("unity_game_id"));
-                                    Callback.setUnityBannerAdID(c.getString("unity_banner_placement_id"));
-                                    Callback.setUnityInterstitialAdID(c.getString("unity_interstitial_placement_id"));
-                                    Callback.setUnityRewardAdID(c.getString("unity_reward_ad_unit_id"));
-                                    break;
-                                case Callback.AD_TYPE_APPLOVIN:
-                                    Callback.setApplovinBannerAdID(c.getString("applovin_banner_ad_unit_id"));
-                                    Callback.setApplovinInterstitialAdID(c.getString("applovin_interstitial_ad_unit_id"));
-                                    Callback.setApplovinNativeAdID(c.getString("applovin_native_ad_manual_unit_id"));
-                                    Callback.setApplovinOpenAdID(c.getString("applovin_app_open_ad_unit_id"));
-                                    Callback.setApplovinRewardAdID(c.getString("applovin_reward_ad_unit_id"));
-                                    break;
-                                case Callback.AD_TYPE_IRONSOURCE:
-                                    Callback.setIronsourceAppKey(c.getString("ironsource_app_key"));
-                                    break;
-                                case Callback.AD_TYPE_META:
-                                    Callback.setAdmobBannerAdID(c.getString("mata_banner_ad_unit_id"));
-                                    Callback.setAdmobInterstitialAdID(c.getString("mata_interstitial_ad_unit_id"));
-                                    Callback.setAdmobNativeAdID(c.getString("mata_native_ad_manual_unit_id"));
-                                    Callback.setAdmobOpenAdID(c.optString("mata_app_open_ad_unit_id", ""));
-                                    Callback.setAdmobRewardAdID(c.optString("mata_reward_ad_unit_id", ""));
-                                    break;
-                                case Callback.AD_TYPE_YANDEX:
-                                    Callback.setYandexBannerAdID(c.getString("yandex_banner_ad_unit_id"));
-                                    Callback.setYandexInterstitialAdID(c.getString("yandex_interstitial_ad_unit_id"));
-                                    Callback.setYandexNativeAdID(c.getString("yandex_native_ad_manual_unit_id"));
-                                    Callback.setYandexOpenAdID(c.getString("yandex_app_open_ad_unit_id"));
-                                    break;
-                                case Callback.AD_TYPE_WORTISE:
-                                    Callback.setWortiseAppID(c.getString("wortise_app_id"));
-                                    Callback.setWortiseBannerAdID(c.getString("wortise_banner_unit_id"));
-                                    Callback.setWortiseInterstitialAdID(c.getString("wortise_interstitial_unit_id"));
-                                    Callback.setWortiseNativeAdID(c.getString("wortise_native_unit_id"));
-                                    Callback.setWortiseOpenAdID(c.getString("wortise_app_open_unit_id"));
-                                    Callback.setWortiseRewardAdID(c.getString("wortise_reward_ad_unit_id"));
-                                    break;
-                                default:
-                                    break;
-                            }
+                            Callback.setAdmobPublisherID(adConfig.publisherId());
+                            Callback.setAdmobBannerAdID(adConfig.id(AdFormat.BANNER));
+                            Callback.setAdmobInterstitialAdID(adConfig.id(AdFormat.INTERSTITIAL));
+                            Callback.setAdmobNativeAdID(adConfig.id(AdFormat.NATIVE));
+                            Callback.setAdmobOpenAdID(adConfig.id(AdFormat.APP_OPEN));
+                            Callback.setAdmobRewardAdID(adConfig.id(AdFormat.REWARD));
 
                             // ADS PLACEMENT -------------------------------------------------------
                             Callback.setIsOpenAd(Boolean.parseBoolean(c.getString("app_open_ad_on_start")));

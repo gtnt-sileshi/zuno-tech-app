@@ -8,7 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:background="?ns_bg"
+        android:layout_marginStart="@dimen/_16sdp"
+        android:layout_marginTop="@dimen/_8sdp"
+        android:layout_marginEnd="@dimen/_16sdp"
+        android:layout_marginBottom="@dimen/_8sdp"
+        android:background="@drawable/bg_home_card"
         android:minHeight="50dp"
         android:orientation="vertical">
 
@@ -20,7 +24,7 @@
             android:textColor="@color/white"
             android:textSize="12sp"
             android:text="Ad"
-            android:background="#FFCC66"
+            android:background="?attr/ns_primary"
             android:width="15dp"
             android:height="15dp"
             android:gravity="center" />
